@@ -3,6 +3,10 @@ package com.nexuslink.wenavi;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -13,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 
 import com.nexuslink.wenavi.R;
@@ -37,7 +42,10 @@ public class MainActivity extends BaseActivity
     private AMapLocationClientOption mLocationOption;
     private AMapLocationClient mLocationClient;
     private UiSettings mUiSettings;//定义一个UiSettings对象
-    private BottomSheetBehavior mBottomSheetBehavior;
+    private BottomSheetBehavior mBottomSheetBehaviorFriends;
+    private BottomSheetBehavior mBottomSheetBehaviorChat;
+    private RecyclerView mFriendsRecyclerView;
+    private RecyclerView mChatRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +54,7 @@ public class MainActivity extends BaseActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //bottomBar控制
         try {
             ImageView bottomBar = (ImageView) findViewById(R.id.bar_bottom);
             Log.d(TAG, "onCreate: " + isBottomNaviBarExist(this));
@@ -62,7 +71,6 @@ public class MainActivity extends BaseActivity
         mMapView = (MapView) findViewById(R.id.view_map);
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
-
         //Amap对象获取
         if (aMap == null) {
             aMap = mMapView.getMap();
@@ -70,22 +78,23 @@ public class MainActivity extends BaseActivity
             //mUiSettings.setZoomControlsEnabled(false);
             mUiSettings.setZoomPosition(1);
         }
-
         //定位
         startLocation();
-        showLocation();
+        initBottomSheet();
 
-        View bottomView = findViewById(R.id.sheet_bottom);
-        mBottomSheetBehavior = BottomSheetBehavior.from(bottomView);
-        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+        //请求完数据后回调部分
+        FriendListAdapter friendListAdapter = new FriendListAdapter(this);
+        mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mFriendsRecyclerView.setAdapter(friendListAdapter);
+        friendListAdapter.setOnItemClickListener(new FriendListAdapter.OnItemClickListener() {
             @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+            public void onItemClick() {
+                mFriendsRecyclerView.setVisibility(View.GONE);
+                mChatRecyclerView.setVisibility(View.VISIBLE);
 
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
+                ChatListAdapter chatListAdapter = new ChatListAdapter(MainActivity.this);
+                mChatRecyclerView.setAdapter(chatListAdapter);
+                mChatRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
             }
         });
 
@@ -93,8 +102,7 @@ public class MainActivity extends BaseActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                bottomView.setVisibility(View.VISIBLE);
             }
         });*/
 
@@ -106,6 +114,36 @@ public class MainActivity extends BaseActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void initBottomSheet() {
+        mFriendsRecyclerView = (RecyclerView) findViewById(R.id.sheet_bottom_friends);
+        mBottomSheetBehaviorFriends = BottomSheetBehavior.from(mFriendsRecyclerView);
+        mBottomSheetBehaviorFriends.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+
+        mChatRecyclerView = (RecyclerView) findViewById(R.id.sheet_bottom_chat);
+        mBottomSheetBehaviorChat = BottomSheetBehavior.from(mChatRecyclerView);
+        mBottomSheetBehaviorChat.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
     }
 
     private void showLocation() {
@@ -226,6 +264,7 @@ public class MainActivity extends BaseActivity
         // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
         //启动定位
         mLocationClient.startLocation();
+        showLocation();
     }
 
     @Override
@@ -237,6 +276,10 @@ public class MainActivity extends BaseActivity
                 amapLocation.getLatitude();//获取纬度
                 amapLocation.getLongitude();//获取经度
                 amapLocation.getAccuracy();//获取精度信息
+                //在此获得当前地址并且显示出来
+                String address = amapLocation.getAddress();
+                String aoiName = amapLocation.getAoiName();
+
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Date date = new Date(amapLocation.getTime());
                 df.format(date);//定位时间

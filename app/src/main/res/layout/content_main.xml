@@ -6,49 +6,29 @@
     android:layout_height="match_parent">
 
     <com.amap.api.maps.MapView
-        android:layout_marginBottom="200dp"
+        android:layout_marginBottom="100dp"
         android:id="@+id/view_map"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-
-    <android.support.v4.widget.NestedScrollView
+    <android.support.v7.widget.RecyclerView
         android:background="#ffffff"
         app:layout_behavior="@string/bottom_sheet_behavior"
-        app:behavior_peekHeight="200dp"
+        app:behavior_peekHeight="100dp"
         app:behavior_hideable="false"
-        android:id="@+id/sheet_bottom"
+        android:id="@+id/sheet_bottom_friends"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <TextView
-                android:padding="8dp"
-                android:layout_margin="8dp"
-                android:textSize="16sp"
-                android:textColor="#ffffff"
-                android:gravity="center"
-                android:text="项目的名称叫简约"
-                android:background="@drawable/shape_bubble_left"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+    </android.support.v7.widget.RecyclerView>
 
-            <TextView
-                android:layout_gravity="right"
-                android:padding="8dp"
-                android:layout_margin="8dp"
-                android:textSize="16sp"
-                android:textColor="#ffffff"
-                android:gravity="center"
-                android:text="是的哦"
-                android:background="@drawable/shape_bubble_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-
-    </android.support.v4.widget.NestedScrollView>
-
+    <android.support.v7.widget.RecyclerView
+        android:visibility="gone"
+        android:background="#ffffff"
+        app:layout_behavior="@string/bottom_sheet_behavior"
+        app:behavior_peekHeight="100dp"
+        app:behavior_hideable="false"
+        android:id="@+id/sheet_bottom_chat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </android.support.v7.widget.RecyclerView>
 </android.support.design.widget.CoordinatorLayout>
