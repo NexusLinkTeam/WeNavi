@@ -12,6 +12,7 @@ import android.view.ViewGroup;
  */
 
 class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatListViewHolder> {
+
     private Context mContext;
     public ChatListAdapter(Context context) {
         this.mContext =context;

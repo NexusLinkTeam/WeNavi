@@ -1,5 +1,7 @@
 package com.nexuslink.wenavi;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -17,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -31,10 +34,16 @@ import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.MyLocationStyle;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, AMapLocationListener {
+
 
     private static final String TAG = "MainActivity";
     private MapView mMapView;
@@ -46,11 +55,39 @@ public class MainActivity extends BaseActivity
     private BottomSheetBehavior mBottomSheetBehaviorChat;
     private RecyclerView mFriendsRecyclerView;
     private RecyclerView mChatRecyclerView;
+    private TextView position;
+    private boolean isChating = false;
+
+    //测试数据
+    private String[] names = {
+            "Jack", "Tom", "Carina", "Charlotte", "Christina",
+            "Juliana", "Maureen", "Milly", "Oprah", "Paula",
+            "Rita", "Sandy", "Yolanda", "Ken", "Kent"
+    };
+
+    private int avatars[] = {
+            R.drawable.t1,
+            R.drawable.t2,
+            R.drawable.t3,
+            R.drawable.t4,
+            R.drawable.t5,
+            R.drawable.t6,
+            R.drawable.t7,
+            R.drawable.t8,
+            R.drawable.t9,
+            R.drawable.t10,
+            R.drawable.t11,
+            R.drawable.t12,
+            R.drawable.t13,
+            R.drawable.t14,
+            R.drawable.t15,
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -66,7 +103,7 @@ public class MainActivity extends BaseActivity
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        position = (TextView) findViewById(R.id.text_position);
         //获取地图控件引用
         mMapView = (MapView) findViewById(R.id.view_map);
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
@@ -83,18 +120,21 @@ public class MainActivity extends BaseActivity
         initBottomSheet();
 
         //请求完数据后回调部分
-        FriendListAdapter friendListAdapter = new FriendListAdapter(this);
+        FriendListAdapter friendListAdapter = new FriendListAdapter(this,avatars,names);
         mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mFriendsRecyclerView.setAdapter(friendListAdapter);
         friendListAdapter.setOnItemClickListener(new FriendListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick() {
+                //通过设置可见度切换
                 mFriendsRecyclerView.setVisibility(View.GONE);
                 mChatRecyclerView.setVisibility(View.VISIBLE);
 
                 ChatListAdapter chatListAdapter = new ChatListAdapter(MainActivity.this);
                 mChatRecyclerView.setAdapter(chatListAdapter);
                 mChatRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+
+                isChating = true;
             }
         });
 
@@ -122,7 +162,12 @@ public class MainActivity extends BaseActivity
         mBottomSheetBehaviorFriends.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        mBottomSheetBehaviorChat.setState(mBottomSheetBehaviorFriends.getState());
+                        break;
+                }
             }
 
             @Override
@@ -136,7 +181,12 @@ public class MainActivity extends BaseActivity
         mBottomSheetBehaviorChat.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        mBottomSheetBehaviorFriends.setState(mBottomSheetBehaviorChat.getState());
+                        break;
+                }
             }
 
             @Override
@@ -162,6 +212,14 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
+
+        if (isChating) {
+            mFriendsRecyclerView.setVisibility(View.VISIBLE);
+            mChatRecyclerView.setVisibility(View.GONE);
+            isChating = false;
+            return;
+        }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -273,13 +331,12 @@ public class MainActivity extends BaseActivity
             if (amapLocation.getErrorCode() == 0) {
                 //定位成功回调信息，设置相关消息
                 amapLocation.getLocationType();//获取当前定位结果来源，如网络定位结果，详见定位类型表
-                amapLocation.getLatitude();//获取纬度
-                amapLocation.getLongitude();//获取经度
+                Double Latitude = amapLocation.getLatitude();//获取纬度
+                Double longitude = amapLocation.getLongitude();//获取经度
                 amapLocation.getAccuracy();//获取精度信息
                 //在此获得当前地址并且显示出来
-                String address = amapLocation.getAddress();
                 String aoiName = amapLocation.getAoiName();
-
+                position.setText(aoiName);
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Date date = new Date(amapLocation.getTime());
                 df.format(date);//定位时间

@@ -6,32 +6,71 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by alphrye on 17-8-7.
  */
 
-class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.FriendListViewHolder> {
+class FriendListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    public static final int TYPE_HEADER = 0;
+    public static final int TYPE_BODY = 1;
+    private int headerCount = 1;//header数目
+    private  int[] avatars;
+    private String[] names;
     private Context mContext;
     private OnItemClickListener mOnItemClickListener;
-    public FriendListAdapter(Context context) {
+    public FriendListAdapter(Context context, int[] avatars, String[] names) {
         this.mContext =context;
+        this.avatars = avatars;
+        this.names = names;
     }
 
     @Override
-    public FriendListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_friends,parent,false);
-        return new FriendListViewHolder(view);
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return TYPE_HEADER;
+        }
+        return TYPE_BODY;
     }
 
     @Override
-    public void onBindViewHolder(FriendListViewHolder holder, int position) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = null;
+        switch(viewType) {
+            case TYPE_HEADER:
+                view = LayoutInflater.from(mContext).inflate(R.layout.item_header,parent,false);
+                return new HeaderViewHolder(view);
+            case TYPE_BODY:
+                view = LayoutInflater.from(mContext).inflate(R.layout.item_friends,parent,false);
+                return new FriendListViewHolder(view);
+        }
+        return null;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+       if(holder instanceof FriendListViewHolder){
+           holder.itemView.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View view) {
+                   if (mOnItemClickListener != null) {
+                       mOnItemClickListener.onItemClick();
+                   }
+               }
+           });
+          ((FriendListViewHolder) holder).nameText.setText(names[position - headerCount]);
+           ((FriendListViewHolder) holder).avatarImg.setImageResource(avatars[position - headerCount]);
+       }
 
     }
 
     @Override
     public int getItemCount() {
-        return 15;
+        return names.length + headerCount;
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -39,18 +78,23 @@ class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.FriendLis
     }
 
     public class FriendListViewHolder extends RecyclerView.ViewHolder {
+        private TextView nameText;
+        private CircleImageView avatarImg;
+        private View itemView;
         public FriendListViewHolder(View itemView) {
             super(itemView);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mOnItemClickListener.onItemClick();
-                }
-            });
+            this.itemView = itemView;
+            nameText = itemView.findViewById(R.id.name_friend);
+            avatarImg = itemView.findViewById(R.id.avatar_friend);
         }
     }
     public interface OnItemClickListener{
         void onItemClick();
+    }
+
+    private class HeaderViewHolder extends RecyclerView.ViewHolder {
+        public HeaderViewHolder(View itemView) {
+            super(itemView);
+        }
     }
 }
