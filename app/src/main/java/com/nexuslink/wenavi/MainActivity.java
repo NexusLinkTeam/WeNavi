@@ -1,12 +1,8 @@
 package com.nexuslink.wenavi;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,10 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-
-import com.nexuslink.wenavi.R;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
@@ -34,9 +27,7 @@ import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.MyLocationStyle;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,17 +37,24 @@ public class MainActivity extends BaseActivity
 
 
     private static final String TAG = "MainActivity";
-    private MapView mMapView;
     private AMap aMap;
     private AMapLocationClientOption mLocationOption;
     private AMapLocationClient mLocationClient;
     private UiSettings mUiSettings;//定义一个UiSettings对象
     private BottomSheetBehavior mBottomSheetBehaviorFriends;
     private BottomSheetBehavior mBottomSheetBehaviorChat;
-    private RecyclerView mFriendsRecyclerView;
-    private RecyclerView mChatRecyclerView;
-    private TextView position;
-    private boolean isChating = false;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.view_map)
+    MapView mMapView;
+    @BindView(R.id.sheet_bottom_friends)
+    RecyclerView mFriendsRecyclerView;
+    @BindView(R.id.sheet_bottom_chat)
+    RecyclerView mChatRecyclerView;
+    @BindView(R.id.text_position)
+    TextView position;
+    private boolean isChatting = false;//是否正在聊天界面
 
     //测试数据
     private String[] names = {
@@ -80,15 +78,15 @@ public class MainActivity extends BaseActivity
             R.drawable.t12,
             R.drawable.t13,
             R.drawable.t14,
-            R.drawable.t15,
+            R.drawable.t15
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //bottomBar控制
@@ -103,9 +101,7 @@ public class MainActivity extends BaseActivity
         } catch (Exception e) {
             e.printStackTrace();
         }
-        position = (TextView) findViewById(R.id.text_position);
-        //获取地图控件引用
-        mMapView = (MapView) findViewById(R.id.view_map);
+
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
         //Amap对象获取
@@ -116,14 +112,13 @@ public class MainActivity extends BaseActivity
             mUiSettings.setZoomPosition(1);
         }
         //定位
-        startLocation();
         initBottomSheet();
 
         //请求完数据后回调部分
-        FriendListAdapter friendListAdapter = new FriendListAdapter(this,avatars,names);
+        FriendListAdapter friendListAdapter = new FriendListAdapter(this, avatars, names);
         mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mFriendsRecyclerView.setAdapter(friendListAdapter);
-        friendListAdapter.setOnItemClickListener(new FriendListAdapter.OnItemClickListener() {
+        friendListAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick() {
                 //通过设置可见度切换
@@ -134,7 +129,7 @@ public class MainActivity extends BaseActivity
                 mChatRecyclerView.setAdapter(chatListAdapter);
                 mChatRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
 
-                isChating = true;
+                isChatting = true;
             }
         });
 
@@ -194,6 +189,8 @@ public class MainActivity extends BaseActivity
 
             }
         });
+        //开始定位
+        startLocation();
     }
 
     private void showLocation() {
@@ -201,8 +198,8 @@ public class MainActivity extends BaseActivity
         myLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);//连续定位、且将视角移动到地图中心点，定位点依照设备方向旋转，并且会跟随设备移动。（1秒1次定位）如果不设置myLocationType，默认也会执行此种模式。
         myLocationStyle.interval(2000); //设置连续定位模式下的定位间隔，只在连续定位模式下生效，单次定位模式下不会生效。单位为毫秒。
         myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER);//连续定位、蓝点不会移动到地图中心点，定位点依照设备方向旋转，并且蓝点会跟随设备移动。
-        /*myLocationStyle.radiusFillColor(R.color.colorAccent);
-        myLocationStyle.strokeColor(R.color.colorPrimary);*/
+        //myLocationStyle.radiusFillColor(R.color.colorAccent);
+        //myLocationStyle.strokeColor(R.color.colorPrimary);
         aMap.getUiSettings().setMyLocationButtonEnabled(true);//设置默认定位按钮是否显示，非必需设置。
         aMap.setMyLocationStyle(myLocationStyle);//设置定位蓝点的Style
         //aMap.getUiSettings().setMyLocationButtonEnabled(true);设置默认定位按钮是否显示，非必需设置。
@@ -213,10 +210,10 @@ public class MainActivity extends BaseActivity
     @Override
     public void onBackPressed() {
 
-        if (isChating) {
+        if (isChatting) {
             mFriendsRecyclerView.setVisibility(View.VISIBLE);
             mChatRecyclerView.setVisibility(View.GONE);
-            isChating = false;
+            isChatting = false;
             return;
         }
 
@@ -230,16 +227,12 @@ public class MainActivity extends BaseActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -280,22 +273,25 @@ public class MainActivity extends BaseActivity
         super.onDestroy();
         //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
         mMapView.onDestroy();
-        if(null != mLocationClient){
+        if (null != mLocationClient) {
             mLocationClient.onDestroy();
         }
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
         mMapView.onResume();
     }
+
     @Override
     protected void onPause() {
         super.onPause();
         //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
         mMapView.onPause();
     }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -342,7 +338,7 @@ public class MainActivity extends BaseActivity
                 df.format(date);//定位时间
             } else {
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
-                Log.e("AmapError","location Error, ErrCode:"
+                Log.e("AmapError", "location Error, ErrCode:"
                         + amapLocation.getErrorCode() + ", errInfo:"
                         + amapLocation.getErrorInfo());
             }

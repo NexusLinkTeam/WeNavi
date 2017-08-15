@@ -1,14 +1,14 @@
 package com.nexuslink.wenavi;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -19,12 +19,13 @@ class FriendListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final int TYPE_HEADER = 0;
     public static final int TYPE_BODY = 1;
     private int headerCount = 1;//header数目
-    private  int[] avatars;
+    private int[] avatars;
     private String[] names;
     private Context mContext;
     private OnItemClickListener mOnItemClickListener;
+
     public FriendListAdapter(Context context, int[] avatars, String[] names) {
-        this.mContext =context;
+        this.mContext = context;
         this.avatars = avatars;
         this.names = names;
     }
@@ -40,12 +41,12 @@ class FriendListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = null;
-        switch(viewType) {
+        switch (viewType) {
             case TYPE_HEADER:
-                view = LayoutInflater.from(mContext).inflate(R.layout.item_header,parent,false);
+                view = LayoutInflater.from(mContext).inflate(R.layout.item_header, parent, false);
                 return new HeaderViewHolder(view);
             case TYPE_BODY:
-                view = LayoutInflater.from(mContext).inflate(R.layout.item_friends,parent,false);
+                view = LayoutInflater.from(mContext).inflate(R.layout.item_friends, parent, false);
                 return new FriendListViewHolder(view);
         }
         return null;
@@ -53,18 +54,26 @@ class FriendListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-       if(holder instanceof FriendListViewHolder){
-           holder.itemView.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View view) {
-                   if (mOnItemClickListener != null) {
-                       mOnItemClickListener.onItemClick();
-                   }
-               }
-           });
-          ((FriendListViewHolder) holder).nameText.setText(names[position - headerCount]);
-           ((FriendListViewHolder) holder).avatarImg.setImageResource(avatars[position - headerCount]);
-       }
+        if (holder instanceof FriendListViewHolder) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mOnItemClickListener != null) {
+                        mOnItemClickListener.onItemClick();
+                    }
+                }
+            });
+            ((FriendListViewHolder) holder).nameText.setText(names[position - headerCount]);
+            ((FriendListViewHolder) holder).avatarImg.setImageResource(avatars[position - headerCount]);
+            ((FriendListViewHolder) holder).itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mOnItemClickListener != null) {
+                        mOnItemClickListener.onItemClick();
+                    }
+                }
+            });
+        }
 
     }
 
@@ -78,18 +87,19 @@ class FriendListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public class FriendListViewHolder extends RecyclerView.ViewHolder {
-        private TextView nameText;
-        private CircleImageView avatarImg;
+
+        @BindView(R.id.name_friend)
+        TextView nameText;
+        @BindView(R.id.avatar_friend)
+        CircleImageView avatarImg;
+
         private View itemView;
+
         public FriendListViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
-            nameText = itemView.findViewById(R.id.name_friend);
-            avatarImg = itemView.findViewById(R.id.avatar_friend);
+            ButterKnife.bind(this, itemView);
         }
-    }
-    public interface OnItemClickListener{
-        void onItemClick();
     }
 
     private class HeaderViewHolder extends RecyclerView.ViewHolder {

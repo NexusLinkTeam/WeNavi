@@ -28,7 +28,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     //某些国产手机下面没有导航栏
-    public boolean isBottomNaviBarExist (Context context) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public boolean isBottomNaviBarExist(Context context) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         boolean hasNavigationBar = false;
         Resources rs = context.getResources();
         int id = rs.getIdentifier("config_showNavigationBar", "bool", "android");
