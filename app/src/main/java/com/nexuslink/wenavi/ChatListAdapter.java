@@ -10,7 +10,10 @@ import android.view.ViewGroup;
  * Created by alphrye on 17-8-7.
  */
 
-class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatListViewHolder> {
+class ChatListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    public static final int TYPE_HEADER = 0;
+    public static final int TYPE_BODY = 1;
 
     private Context mContext;
 
@@ -19,13 +22,29 @@ class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatListViewH
     }
 
     @Override
-    public ChatListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_chat, parent, false);
-        return new ChatListViewHolder(view);
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return TYPE_HEADER;
+        }
+        return TYPE_BODY;
     }
 
     @Override
-    public void onBindViewHolder(ChatListViewHolder holder, int position) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = null;
+        switch (viewType) {
+            case TYPE_HEADER:
+                view = LayoutInflater.from(mContext).inflate(R.layout.item_header, parent, false);
+                return new HeaderViewHolder(view);
+            case TYPE_BODY:
+                view = LayoutInflater.from(mContext).inflate(R.layout.item_chat, parent, false);
+                return new ChatListAdapter.ChatListViewHolder(view);
+        }
+        return null;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
     }
 

@@ -23,9 +23,9 @@
 
     <android.support.v7.widget.RecyclerView
         android:visibility="gone"
-        android:background="#ffffff"
+        android:background="#00000000"
         app:layout_behavior="@string/bottom_sheet_behavior"
-        app:behavior_peekHeight="100dp"
+        app:behavior_peekHeight="180dp"
         app:behavior_hideable="false"
         android:id="@+id/sheet_bottom_chat"
         android:layout_width="match_parent"

@@ -1,27 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/icons"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <TextView
-        android:padding="8dp"
-        android:layout_margin="8dp"
-        android:textSize="16sp"
-        android:textColor="#ffffff"
-        android:gravity="center"
-        android:text="项目的名称叫简约"
-        android:background="@drawable/shape_bubble_left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_gravity="right"
-        android:padding="8dp"
-        android:layout_margin="8dp"
-        android:textSize="16sp"
-        android:textColor="#ffffff"
-        android:gravity="center"
-        android:text="是的哦"
-        android:background="@drawable/shape_bubble_right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_margin="8dp"
+            android:src="@drawable/t15"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+
+        <TextView
+            android:layout_marginTop="24dp"
+            android:padding="6dp"
+            android:textSize="16sp"
+            android:textColor="#ffffff"
+            android:gravity="center"
+            android:text="项目的名称叫简约"
+            android:background="@drawable/shape_bubble_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:gravity="end"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_marginTop="24dp"
+            android:padding="6dp"
+            android:textSize="16sp"
+            android:textColor="#ffffff"
+            android:gravity="center"
+            android:text="是的哦"
+            android:background="@drawable/shape_bubble_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_margin="8dp"
+            android:src="@drawable/t1"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+
+    </LinearLayout>
 </LinearLayout>
