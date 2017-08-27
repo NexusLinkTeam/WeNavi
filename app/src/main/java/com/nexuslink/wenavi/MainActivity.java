@@ -1,26 +1,27 @@
 package com.nexuslink.wenavi;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-
-import com.nexuslink.wenavi.R;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
@@ -28,13 +29,21 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.UiSettings;
+import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.amap.api.maps.model.Polyline;
+import com.amap.api.maps.model.PolylineOptions;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
 
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, AMapLocationListener {
+        implements NavigationView.OnNavigationItemSelectedListener, AMapLocationListener,View.OnClickListener{
 
     private static final String TAG = "MainActivity";
     private MapView mMapView;
@@ -46,11 +55,40 @@ public class MainActivity extends BaseActivity
     private BottomSheetBehavior mBottomSheetBehaviorChat;
     private RecyclerView mFriendsRecyclerView;
     private RecyclerView mChatRecyclerView;
-
+    private double latarray[] = new double[1024];
+    private double lngarray[] = new double[1024];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        TextView textView = (TextView) findViewById(R.id.tv_pos);
+        JMessageClient.register("1001", "1001", new BasicCallback() {
+            @Override
+            public void gotResult(int i, String s) {
+                JMessageClient.login("1001", "1001", new BasicCallback() {
+                    @Override
+                    public void gotResult(int i, String s) {
+                        if(i==0){
+                            Toast.makeText(MainActivity.this,"登录成功",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<LatLng> latLngs = new ArrayList<LatLng>();
+                for(int i=0;i<latarray.length;i++){
+                    latLngs.add(new LatLng(latarray[i],lngarray[i]));
+                    if((int)latarray[i]==0){
+                        break;
+                    }
+                    Log.e("TAG",latarray[i]+"   "+lngarray[i]);
+                }
+                Polyline polyline = aMap.addPolyline(new PolylineOptions().addAll(latLngs).width(10).color(Color.argb(255,1,1,1)));
+            }
+        });
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -78,10 +116,38 @@ public class MainActivity extends BaseActivity
             //mUiSettings.setZoomControlsEnabled(false);
             mUiSettings.setZoomPosition(1);
         }
+        mUiSettings.setAllGesturesEnabled(false);
+        aMap.setOnMapTouchListener(new AMap.OnMapTouchListener() {
+            int i = 0;
+            List<LatLng> latLngs = new ArrayList<LatLng>();;
+            @Override
+            public void onTouch(MotionEvent motionEvent) {
+                switch (motionEvent.getAction()){
+                    case MotionEvent.ACTION_MOVE:
+
+                        int x = (int) motionEvent.getX();
+                        int y = (int) motionEvent.getY();
+                        Point point = new Point();
+                        point.x = x;
+                        point.y = y;
+                        LatLng geoPoint = aMap.getProjection().fromScreenLocation(point);
+                        latarray[i]=geoPoint.latitude;
+                        lngarray[i]=geoPoint.longitude;
+                        i++;
+                        Log.e("TAG","经度:"+geoPoint.latitude+"----纬度:"+geoPoint.longitude);
+                        latLngs.add(geoPoint);
+                        if(i%2==0){
+                            Polyline polyline = aMap.addPolyline(new PolylineOptions().addAll(latLngs).width(10).color(Color.argb(255,1,1,1)));
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        i=0;
+                }
+            }
+        });
         //定位
         startLocation();
         initBottomSheet();
-
         //请求完数据后回调部分
         FriendListAdapter friendListAdapter = new FriendListAdapter(this);
         mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -115,6 +181,7 @@ public class MainActivity extends BaseActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
 
     private void initBottomSheet() {
         mFriendsRecyclerView = (RecyclerView) findViewById(R.id.sheet_bottom_friends);
@@ -186,6 +253,7 @@ public class MainActivity extends BaseActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this,AddFriendActivity.class));
             return true;
         }
 
@@ -294,6 +362,12 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+    @Override
+    public void onClick(View view) {
+
 
     }
 }

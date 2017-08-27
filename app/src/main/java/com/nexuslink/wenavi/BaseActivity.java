@@ -9,8 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Objects;
 
 /**
  * Created by alphrye on 17-8-7.

@@ -1,6 +1,5 @@
 package com.nexuslink.wenavi;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,7 +10,7 @@ import android.view.ViewGroup;
  * Created by alphrye on 17-8-7.
  */
 
-class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatListViewHolder> {
+public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatListViewHolder> {
     private Context mContext;
     public ChatListAdapter(Context context) {
         this.mContext =context;
