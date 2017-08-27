@@ -1,4 +1,4 @@
-package com.alphrye.wenavi;
+package com.nexuslink.wenavi;
 
 import org.junit.Test;
 

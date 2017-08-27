@@ -3,11 +3,12 @@ package com.nexuslink.wenavi;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -18,12 +19,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.wevey.selector.dialog.MDEditDialog;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.jpush.im.android.api.ContactManager;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.model.UserInfo;
+import cn.jpush.im.api.BasicCallback;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by ASUS-NB on 2017/8/27.
@@ -36,17 +42,20 @@ public class AddFriendActivity extends BaseActivity {
     ImageView ivClear;
     @BindView(R.id.btn_search)
     Button btnSearch;
-    @BindView(R.id.img_head)
-    ImageView imgHead;
     @BindView(R.id.search_name)
     TextView mSearchName;
-    @BindView(R.id.search_addBtn)
-    Button searchAddBtn;
+
     @BindView(R.id.search_result)
     LinearLayout searchResult;
     ProgressDialog dialog;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.search_addBtn)
+    TextView searchAddBtn;
+    @BindView(R.id.avatar_friend)
+    CircleImageView avatarFriend;
+    UserInfo myInfo,friendInfo;
+    MDEditDialog dialog6;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +77,7 @@ public class AddFriendActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_clear:
+                etSearchUser.setText("");
                 break;
             case R.id.btn_search:
                 hideKb();
@@ -79,9 +89,17 @@ public class AddFriendActivity extends BaseActivity {
                         public void gotResult(int i, String s, UserInfo userInfo) {
                             if (i == 0) {
                                 dialog.dismiss();
+                                Log.e("TAG","gotResult");
                                 searchResult.setVisibility(View.VISIBLE);
-                                searchAddBtn.setVisibility(View.VISIBLE);
-                                mSearchName.setText(userInfo.getUserName());
+                                friendInfo = userInfo;
+                                myInfo= JMessageClient.getMyInfo();
+                                if(userInfo.isFriend()||userInfo.getUserName().equals(myInfo.getUserName())){
+                                }else {
+                                    searchAddBtn.setVisibility(View.VISIBLE);
+                                }
+                                avatarFriend.setImageResource(R.drawable.t1);
+                                Log.e("TAG",userInfo.getUserName());
+                                mSearchName.setText(userInfo.getNickname());
                             } else {
                                 Toast.makeText(AddFriendActivity.this, "该用户不存在", Toast.LENGTH_SHORT).show();
                             }
@@ -90,6 +108,48 @@ public class AddFriendActivity extends BaseActivity {
                 }
                 break;
             case R.id.search_addBtn:
+                dialog6 = new MDEditDialog.Builder(AddFriendActivity.this)
+                        .setTitleVisible(true)
+                        .setInputTpye(InputType.TYPE_CLASS_TEXT)
+                        .setTitleText("打个招呼吧")
+                        .setTitleTextSize(20)
+                        .setTitleTextColor(R.color.black_light)
+                        .setContentText("嗨，我是"+myInfo.getNickname())
+                        .setContentTextSize(18)
+                        .setMaxLength(7)
+                        .setMaxLines(1)
+                        .setContentTextColor(R.color.primary_text)
+                        .setButtonTextSize(14)
+                        .setLeftButtonTextColor(R.color.primary)
+                        .setLeftButtonText("取消")
+                        .setRightButtonTextColor(R.color.primary)
+                        .setRightButtonText("发送")
+                        .setLineColor(R.color.lite_blue)
+                        .setOnclickListener(new MDEditDialog.OnClickEditDialogListener() {
+                            @Override
+                            public void clickLeftButton(View view, String text) {
+                                dialog6.dismiss();
+                            }
+                            @Override
+                            public void clickRightButton(View view, String text) {
+                                ContactManager.sendInvitationRequest(friendInfo.getUserName(), "31b2964462b4db5e14442b9f", text, new BasicCallback() {
+                                    @Override
+                                    public void gotResult(int i, String s) {
+                                        if(i==0){
+                                            Toast.makeText(AddFriendActivity.this,"好友申请已发送，请等待对方确认",Toast.LENGTH_SHORT).show();
+                                            dialog6.dismiss();
+                                        }else {
+                                            Toast.makeText(AddFriendActivity.this,"好友申请发送失败",Toast.LENGTH_SHORT).show();
+                                            dialog6.dismiss();
+                                        }
+                                    }
+                                });
+                            }
+                        })
+                        .setMinHeight(0.3f)
+                        .setWidth(0.8f)
+                        .build();
+                dialog6.show();
                 break;
             case R.id.search_result:
                 break;
@@ -99,11 +159,12 @@ public class AddFriendActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id ==android.R.id.home){
+        if (id == android.R.id.home) {
             finish();
         }
         return true;
     }
+
 
     public class TextChange implements TextWatcher {
 

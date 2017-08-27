@@ -20,7 +20,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -39,57 +38,92 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.jpush.im.android.api.JMessageClient;
-import cn.jpush.im.api.BasicCallback;
+import cn.jpush.im.android.api.callback.GetUserInfoCallback;
+import cn.jpush.im.android.api.event.ContactNotifyEvent;
+import cn.jpush.im.android.api.model.UserInfo;
 
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, AMapLocationListener,View.OnClickListener{
+        implements NavigationView.OnNavigationItemSelectedListener, AMapLocationListener, View.OnClickListener {
+
 
     private static final String TAG = "MainActivity";
-    private MapView mMapView;
+    @BindView(R.id.friend_verification_num)
+    TextView friendVerificationNum;
     private AMap aMap;
     private AMapLocationClientOption mLocationOption;
     private AMapLocationClient mLocationClient;
     private UiSettings mUiSettings;//定义一个UiSettings对象
     private BottomSheetBehavior mBottomSheetBehaviorFriends;
     private BottomSheetBehavior mBottomSheetBehaviorChat;
-    private RecyclerView mFriendsRecyclerView;
-    private RecyclerView mChatRecyclerView;
     private double latarray[] = new double[1024];
     private double lngarray[] = new double[1024];
+    DaoSession daoSession = BaseApp.getDaosession();
+    FriendVerifyDao verifyDao = daoSession.getFriendVerifyDao();
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.view_map)
+    MapView mMapView;
+    @BindView(R.id.sheet_bottom_friends)
+    RecyclerView mFriendsRecyclerView;
+    @BindView(R.id.sheet_bottom_chat)
+    RecyclerView mChatRecyclerView;
+    @BindView(R.id.text_position)
+    TextView position;
+    private boolean isChatting = false;//是否正在聊天界面
+
+    //测试数据
+    private String[] names = {
+            "Jack", "Tom", "Carina", "Charlotte", "Christina",
+            "Juliana", "Maureen", "Milly", "Oprah", "Paula",
+            "Rita", "Sandy", "Yolanda", "Ken", "Kent"
+    };
+
+    private int avatars[] = {
+            R.drawable.t1,
+            R.drawable.t2,
+            R.drawable.t3,
+            R.drawable.t4,
+            R.drawable.t5,
+            R.drawable.t6,
+            R.drawable.t7,
+            R.drawable.t8,
+            R.drawable.t9,
+            R.drawable.t10,
+            R.drawable.t11,
+            R.drawable.t12,
+            R.drawable.t13,
+            R.drawable.t14,
+            R.drawable.t15
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TextView textView = (TextView) findViewById(R.id.tv_pos);
-        JMessageClient.register("1001", "1001", new BasicCallback() {
-            @Override
-            public void gotResult(int i, String s) {
-                JMessageClient.login("1001", "1001", new BasicCallback() {
-                    @Override
-                    public void gotResult(int i, String s) {
-                        if(i==0){
-                            Toast.makeText(MainActivity.this,"登录成功",Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        });
+        TextView textView = (TextView) findViewById(R.id.text_position);
+        //注册接收器
+        JMessageClient.registerEventReceiver(this);
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 List<LatLng> latLngs = new ArrayList<LatLng>();
-                for(int i=0;i<latarray.length;i++){
-                    latLngs.add(new LatLng(latarray[i],lngarray[i]));
-                    if((int)latarray[i]==0){
+                for (int i = 0; i < latarray.length; i++) {
+                    latLngs.add(new LatLng(latarray[i], lngarray[i]));
+                    if ((int) latarray[i] == 0) {
                         break;
                     }
-                    Log.e("TAG",latarray[i]+"   "+lngarray[i]);
+                    Log.e("TAG", latarray[i] + "   " + lngarray[i]);
                 }
-                Polyline polyline = aMap.addPolyline(new PolylineOptions().addAll(latLngs).width(10).color(Color.argb(255,1,1,1)));
+                Polyline polyline = aMap.addPolyline(new PolylineOptions().addAll(latLngs).width(10).color(Color.argb(255, 1, 1, 1)));
             }
         });
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
 
         //bottomBar控制
@@ -105,8 +139,6 @@ public class MainActivity extends BaseActivity
             e.printStackTrace();
         }
 
-        //获取地图控件引用
-        mMapView = (MapView) findViewById(R.id.view_map);
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
         //Amap对象获取
@@ -119,10 +151,12 @@ public class MainActivity extends BaseActivity
         mUiSettings.setAllGesturesEnabled(false);
         aMap.setOnMapTouchListener(new AMap.OnMapTouchListener() {
             int i = 0;
-            List<LatLng> latLngs = new ArrayList<LatLng>();;
+            List<LatLng> latLngs = new ArrayList<LatLng>();
+            ;
+
             @Override
             public void onTouch(MotionEvent motionEvent) {
-                switch (motionEvent.getAction()){
+                switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_MOVE:
 
                         int x = (int) motionEvent.getX();
@@ -131,36 +165,38 @@ public class MainActivity extends BaseActivity
                         point.x = x;
                         point.y = y;
                         LatLng geoPoint = aMap.getProjection().fromScreenLocation(point);
-                        latarray[i]=geoPoint.latitude;
-                        lngarray[i]=geoPoint.longitude;
+                        latarray[i] = geoPoint.latitude;
+                        lngarray[i] = geoPoint.longitude;
                         i++;
-                        Log.e("TAG","经度:"+geoPoint.latitude+"----纬度:"+geoPoint.longitude);
+                        Log.e("TAG", "经度:" + geoPoint.latitude + "----纬度:" + geoPoint.longitude);
                         latLngs.add(geoPoint);
-                        if(i%2==0){
-                            Polyline polyline = aMap.addPolyline(new PolylineOptions().addAll(latLngs).width(10).color(Color.argb(255,1,1,1)));
+                        if (i % 2 == 0) {
+                            Polyline polyline = aMap.addPolyline(new PolylineOptions().addAll(latLngs).width(10).color(Color.argb(255, 1, 1, 1)));
                         }
                         break;
                     case MotionEvent.ACTION_UP:
-                        i=0;
+                        i = 0;
                 }
             }
         });
         //定位
-        startLocation();
         initBottomSheet();
         //请求完数据后回调部分
-        FriendListAdapter friendListAdapter = new FriendListAdapter(this);
+        FriendListAdapter friendListAdapter = new FriendListAdapter(this, avatars, names);
         mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mFriendsRecyclerView.setAdapter(friendListAdapter);
-        friendListAdapter.setOnItemClickListener(new FriendListAdapter.OnItemClickListener() {
+        friendListAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick() {
+                //通过设置可见度切换
                 mFriendsRecyclerView.setVisibility(View.GONE);
                 mChatRecyclerView.setVisibility(View.VISIBLE);
 
                 ChatListAdapter chatListAdapter = new ChatListAdapter(MainActivity.this);
                 mChatRecyclerView.setAdapter(chatListAdapter);
                 mChatRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+
+                isChatting = true;
             }
         });
 
@@ -189,7 +225,12 @@ public class MainActivity extends BaseActivity
         mBottomSheetBehaviorFriends.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        mBottomSheetBehaviorChat.setState(mBottomSheetBehaviorFriends.getState());
+                        break;
+                }
             }
 
             @Override
@@ -203,7 +244,12 @@ public class MainActivity extends BaseActivity
         mBottomSheetBehaviorChat.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        mBottomSheetBehaviorFriends.setState(mBottomSheetBehaviorChat.getState());
+                        break;
+                }
             }
 
             @Override
@@ -211,6 +257,8 @@ public class MainActivity extends BaseActivity
 
             }
         });
+        //开始定位
+        startLocation();
     }
 
     private void showLocation() {
@@ -218,8 +266,8 @@ public class MainActivity extends BaseActivity
         myLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);//连续定位、且将视角移动到地图中心点，定位点依照设备方向旋转，并且会跟随设备移动。（1秒1次定位）如果不设置myLocationType，默认也会执行此种模式。
         myLocationStyle.interval(2000); //设置连续定位模式下的定位间隔，只在连续定位模式下生效，单次定位模式下不会生效。单位为毫秒。
         myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER);//连续定位、蓝点不会移动到地图中心点，定位点依照设备方向旋转，并且蓝点会跟随设备移动。
-        /*myLocationStyle.radiusFillColor(R.color.colorAccent);
-        myLocationStyle.strokeColor(R.color.colorPrimary);*/
+        //myLocationStyle.radiusFillColor(R.color.colorAccent);
+        //myLocationStyle.strokeColor(R.color.colorPrimary);
         aMap.getUiSettings().setMyLocationButtonEnabled(true);//设置默认定位按钮是否显示，非必需设置。
         aMap.setMyLocationStyle(myLocationStyle);//设置定位蓝点的Style
         //aMap.getUiSettings().setMyLocationButtonEnabled(true);设置默认定位按钮是否显示，非必需设置。
@@ -229,6 +277,14 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
+
+        if (isChatting) {
+            mFriendsRecyclerView.setVisibility(View.VISIBLE);
+            mChatRecyclerView.setVisibility(View.GONE);
+            isChatting = false;
+            return;
+        }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -239,21 +295,19 @@ public class MainActivity extends BaseActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(this,AddFriendActivity.class));
+        if (id == R.id.action_friend_verify) {
+
+        } else if (id == R.id.add_friends) {
+            startActivity(new Intent(this, AddFriendActivity.class));
             return true;
         }
 
@@ -289,23 +343,36 @@ public class MainActivity extends BaseActivity
     protected void onDestroy() {
         super.onDestroy();
         //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
+        JMessageClient.unRegisterEventReceiver(this);
         mMapView.onDestroy();
-        if(null != mLocationClient){
+        if (null != mLocationClient) {
             mLocationClient.onDestroy();
         }
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
         mMapView.onResume();
+        List<FriendVerify> list = verifyDao.queryBuilder().listLazy();
+
+        Log.e("TAG",""+list.size());
+        if(list.size()==0){
+            friendVerificationNum.setVisibility(View.INVISIBLE);
+        }else {
+            friendVerificationNum.setVisibility(View.VISIBLE);
+            friendVerificationNum.setText(list.size()+"");
+        }
     }
+
     @Override
     protected void onPause() {
         super.onPause();
         //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
         mMapView.onPause();
     }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -341,19 +408,18 @@ public class MainActivity extends BaseActivity
             if (amapLocation.getErrorCode() == 0) {
                 //定位成功回调信息，设置相关消息
                 amapLocation.getLocationType();//获取当前定位结果来源，如网络定位结果，详见定位类型表
-                amapLocation.getLatitude();//获取纬度
-                amapLocation.getLongitude();//获取经度
+                Double Latitude = amapLocation.getLatitude();//获取纬度
+                Double longitude = amapLocation.getLongitude();//获取经度
                 amapLocation.getAccuracy();//获取精度信息
                 //在此获得当前地址并且显示出来
-                String address = amapLocation.getAddress();
                 String aoiName = amapLocation.getAoiName();
-
+                position.setText(aoiName);
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Date date = new Date(amapLocation.getTime());
                 df.format(date);//定位时间
             } else {
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
-                Log.e("AmapError","location Error, ErrCode:"
+                Log.e("AmapError", "location Error, ErrCode:"
                         + amapLocation.getErrorCode() + ", errInfo:"
                         + amapLocation.getErrorInfo());
             }
@@ -369,5 +435,54 @@ public class MainActivity extends BaseActivity
     public void onClick(View view) {
 
 
+    }
+
+    public void onEvent(ContactNotifyEvent event) {
+        Log.e("TAG","收到事件");
+        switch (event.getType()) {
+            case invite_received://收到好友邀请
+                Log.e("TAG","收到好友邀请");
+                String userName = event.getFromUsername();
+                Log.e("TAG",userName);
+                final String reason = event.getReason();
+                JMessageClient.getUserInfo(userName, new GetUserInfoCallback() {
+                    @Override
+                    public void gotResult(int i, String s, UserInfo userInfo) {
+                        if(i==0){
+                            Log.e("TAG","成功了啊");
+                            FriendVerify verify = new FriendVerify();
+//                            verify.setAvatar(userInfo.getAvatarFile().getAbsolutePath());
+                            verify.setHello(reason);
+                            verify.setNickName(userInfo.getNickname());
+                            verify.setUserName(userInfo.getUserName());
+                            verifyDao.insert(verify);
+                            List<FriendVerify> list = verifyDao.queryBuilder().listLazy();
+                            Log.e("TAG",""+list.size());
+                            if(list.size()==0){
+                                friendVerificationNum.setVisibility(View.INVISIBLE);
+
+                            }else {
+                                friendVerificationNum.setVisibility(View.VISIBLE);
+                                friendVerificationNum.setText(list.size()+"");
+                            }
+                        }
+                        Log.e("TAG","失败了");
+
+                    }
+                });
+
+                break;
+            case invite_accepted://对方接收了你的好友邀请
+                //...
+                break;
+            case invite_declined://对方拒绝了你的好友邀请
+                //...
+                break;
+            case contact_deleted://对方将你从好友中删除
+                //...
+                break;
+            default:
+                break;
+        }
     }
 }
