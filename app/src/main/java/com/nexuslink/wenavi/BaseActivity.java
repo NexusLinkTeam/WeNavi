@@ -1,12 +1,14 @@
 package com.nexuslink.wenavi;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -36,5 +38,21 @@ public class BaseActivity extends AppCompatActivity {
             hasNavigationBar = rs.getBoolean(id);
         }
         return hasNavigationBar;
+    }
+
+    public void openActivity(Class<?> tartget, Bundle bundle){
+        Intent intent = new Intent(this,tartget);
+        if (bundle != null) {
+            intent.putExtras(bundle);
+        }
+        startActivity(intent);
+    }
+
+    public void shortToast(String text){
+        Toast.makeText(this,text,Toast.LENGTH_SHORT).show();
+    }
+
+    public void longToast(String text){
+        Toast.makeText(this,text,Toast.LENGTH_LONG).show();
     }
 }
