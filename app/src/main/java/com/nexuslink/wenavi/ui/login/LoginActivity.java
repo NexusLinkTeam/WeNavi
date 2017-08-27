@@ -6,16 +6,16 @@ import android.widget.EditText;
 
 import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseActivity;
-import com.nexuslink.wenavi.contract.LoginContract;
-import com.nexuslink.wenavi.model.LoginModel;
-import com.nexuslink.wenavi.presenter.LoginPresenter;
+import com.nexuslink.wenavi.contract.UserContract;
+import com.nexuslink.wenavi.model.UserModel;
+import com.nexuslink.wenavi.presenter.UserPresenter;
 import com.nexuslink.wenavi.ui.main.MainActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoginActivity extends BaseActivity implements LoginContract.View {
+public class LoginActivity extends BaseActivity implements UserContract.View {
 
     @BindView(R.id.editTx_account)
     EditText accountEditTx;
@@ -33,7 +33,7 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
         presenter.login(accountEditTx,pwEditTx);
     }
 
-    private LoginContract.Presenter presenter;
+    private UserContract.Presenter presenter;
     private ProgressDialog progressDialog;
 
     @Override
@@ -41,12 +41,14 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        initProgressDialog();
+        new UserPresenter(this,UserModel.getInstance());
+    }
 
+    private void initProgressDialog() {
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("登录");
         progressDialog.setMessage("加载中...");
-
-        new LoginPresenter(this,new LoginModel());
     }
 
     @Override
@@ -76,7 +78,7 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
     }
 
     @Override
-    public void setPresenter(LoginContract.Presenter presenter) {
+    public void setPresenter(UserContract.Presenter presenter) {
         this.presenter = presenter;
     }
 }
