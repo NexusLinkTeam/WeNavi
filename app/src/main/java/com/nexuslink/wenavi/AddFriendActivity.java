@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nexuslink.wenavi.base.BaseActivity;
 import com.wevey.selector.dialog.MDEditDialog;
 
 import butterknife.BindView;

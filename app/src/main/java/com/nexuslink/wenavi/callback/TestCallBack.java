@@ -1,9 +1,9 @@
-package com.nexuslink.wenavi;
+package com.nexuslink.wenavi.callback;
 
 /**
  * Created by aplrye on 17-8-27.
  */
 
-interface TestCallBack {
+public interface TestCallBack {
     void verificationOk();
 }

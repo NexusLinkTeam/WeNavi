@@ -1,4 +1,4 @@
-package com.nexuslink.wenavi;
+package com.nexuslink.wenavi.ui.main;
 
 
 import android.os.Bundle;

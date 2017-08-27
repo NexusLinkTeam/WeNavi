@@ -1,6 +1,9 @@
-package com.nexuslink.wenavi;
+package com.nexuslink.wenavi.contract;
 
 import android.widget.EditText;
+
+import com.nexuslink.wenavi.base.BasePresenter;
+import com.nexuslink.wenavi.base.BaseView;
 
 /**
  * Created by aplrye on 17-8-27.

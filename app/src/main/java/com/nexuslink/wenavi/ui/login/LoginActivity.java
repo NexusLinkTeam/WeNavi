@@ -1,8 +1,15 @@
-package com.nexuslink.wenavi;
+package com.nexuslink.wenavi.ui.login;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.widget.EditText;
+
+import com.nexuslink.wenavi.R;
+import com.nexuslink.wenavi.base.BaseActivity;
+import com.nexuslink.wenavi.contract.LoginContract;
+import com.nexuslink.wenavi.model.LoginModel;
+import com.nexuslink.wenavi.presenter.LoginPresenter;
+import com.nexuslink.wenavi.ui.main.MainActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

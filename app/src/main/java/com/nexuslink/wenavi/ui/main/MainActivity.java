@@ -1,4 +1,4 @@
-package com.nexuslink.wenavi;
+package com.nexuslink.wenavi.ui.main;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -32,6 +32,14 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.amap.api.maps.model.Polyline;
 import com.amap.api.maps.model.PolylineOptions;
+import com.nexuslink.wenavi.AddFriendActivity;
+import com.nexuslink.wenavi.BaseApp;
+import com.nexuslink.wenavi.DaoSession;
+import com.nexuslink.wenavi.FriendVerify;
+import com.nexuslink.wenavi.FriendVerifyDao;
+import com.nexuslink.wenavi.R;
+import com.nexuslink.wenavi.base.BaseActivity;
+import com.nexuslink.wenavi.callback.OnItemClickListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

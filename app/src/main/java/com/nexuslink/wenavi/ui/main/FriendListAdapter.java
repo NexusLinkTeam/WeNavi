@@ -1,4 +1,4 @@
-package com.nexuslink.wenavi;
+package com.nexuslink.wenavi.ui.main;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.nexuslink.wenavi.callback.OnItemClickListener;
+import com.nexuslink.wenavi.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

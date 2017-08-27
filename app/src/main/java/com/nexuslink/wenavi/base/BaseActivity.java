@@ -1,4 +1,4 @@
-package com.nexuslink.wenavi;
+package com.nexuslink.wenavi.base;
 
 import android.content.Context;
 import android.content.Intent;

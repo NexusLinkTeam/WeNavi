@@ -1,6 +1,7 @@
-package com.nexuslink.wenavi;
+package com.nexuslink.wenavi.model;
 
-import android.os.Handler;
+import com.nexuslink.wenavi.callback.TestCallBack;
+import com.nexuslink.wenavi.presenter.LoginPresenter;
 
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.api.BasicCallback;

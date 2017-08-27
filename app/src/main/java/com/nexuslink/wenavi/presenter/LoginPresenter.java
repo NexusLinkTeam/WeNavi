@@ -1,6 +1,10 @@
-package com.nexuslink.wenavi;
+package com.nexuslink.wenavi.presenter;
 
 import android.widget.EditText;
+
+import com.nexuslink.wenavi.callback.TestCallBack;
+import com.nexuslink.wenavi.contract.LoginContract;
+import com.nexuslink.wenavi.model.ILoginModel;
 
 import java.util.Objects;
 
@@ -8,7 +12,7 @@ import java.util.Objects;
  * Created by aplrye on 17-8-27.
  */
 
-public class LoginPresenter implements LoginContract.Presenter,TestCallBack{
+public class LoginPresenter implements LoginContract.Presenter, TestCallBack {
     private LoginContract.View view;
     private ILoginModel model;
 
@@ -39,6 +43,7 @@ public class LoginPresenter implements LoginContract.Presenter,TestCallBack{
     @Override
     public void verificationOk() {
         view.showHome();
+        view.showProgress(false);
         view.showNotifyInfo("Welcome");
     }
 }

@@ -1,4 +1,6 @@
-package com.nexuslink.wenavi;
+package com.nexuslink.wenavi.model;
+
+import com.nexuslink.wenavi.presenter.LoginPresenter;
 
 /**
  * Created by aplrye on 17-8-27.

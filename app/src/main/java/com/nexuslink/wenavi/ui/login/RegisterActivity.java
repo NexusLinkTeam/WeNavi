@@ -1,4 +1,4 @@
-package com.nexuslink.wenavi;
+package com.nexuslink.wenavi.ui.login;
 
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
@@ -8,6 +8,10 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.nexuslink.wenavi.R;
+import com.nexuslink.wenavi.base.BaseActivity;
+import com.nexuslink.wenavi.ui.main.MainActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
