@@ -1,4 +1,4 @@
-package com.nexuslink.wenavi;
+package com.nexuslink.wenavi.ui.main;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -6,11 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.nexuslink.wenavi.R;
+
 /**
  * Created by alphrye on 17-8-7.
  */
 
-class ChatListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ChatListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static final int TYPE_HEADER = 0;
     public static final int TYPE_BODY = 1;

@@ -1,7 +1,10 @@
-package com.nexuslink.wenavi;
+package com.nexuslink.wenavi.ui.login;
 
 import android.os.Bundle;
 import android.widget.EditText;
+
+import com.nexuslink.wenavi.R;
+import com.nexuslink.wenavi.base.BaseActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

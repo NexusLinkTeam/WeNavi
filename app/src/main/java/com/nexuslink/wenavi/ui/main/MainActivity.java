@@ -1,4 +1,4 @@
-package com.nexuslink.wenavi;
+package com.nexuslink.wenavi.ui.main;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,6 +25,9 @@ import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.nexuslink.wenavi.callback.OnItemClickListener;
+import com.nexuslink.wenavi.R;
+import com.nexuslink.wenavi.base.BaseActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

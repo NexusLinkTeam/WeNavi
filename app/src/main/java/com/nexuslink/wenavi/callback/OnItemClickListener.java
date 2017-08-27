@@ -1,4 +1,4 @@
-package com.nexuslink.wenavi;
+package com.nexuslink.wenavi.callback;
 
 public interface OnItemClickListener {
     void onItemClick();
