@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.nexuslink.wenavi.util.ActivityCollector;
+
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -25,6 +27,8 @@ public class BaseActivity extends AppCompatActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
+
+        ActivityCollector.add(this);
     }
 
     //某些国产手机下面没有导航栏
@@ -44,6 +48,12 @@ public class BaseActivity extends AppCompatActivity {
             intent.putExtras(bundle);
         }
         startActivity(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.remove(this);
     }
 
     public void shortToast(String text){

@@ -1,12 +1,14 @@
 package com.nexuslink.wenavi.ui.login;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 
 import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseActivity;
@@ -14,12 +16,13 @@ import com.nexuslink.wenavi.contract.UserContract;
 import com.nexuslink.wenavi.model.UserModel;
 import com.nexuslink.wenavi.presenter.UserPresenter;
 import com.nexuslink.wenavi.ui.main.MainActivity;
+import com.nexuslink.wenavi.util.ActivityCollector;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class RegisterActivity extends BaseActivity implements UserContract.View{
+public class RegisterActivity extends BaseActivity implements UserContract.View {
 
     @BindView(R.id.editTx_name)
     EditText nameEditTx;
@@ -30,11 +33,16 @@ public class RegisterActivity extends BaseActivity implements UserContract.View{
     @BindView(R.id.editTx_password)
     EditText pwEditTx;
 
+    @BindView(R.id.scroll_register_form)
+    ScrollView registerFormScroll;
+
     @BindView(R.id.btn_sign_up)
     AppCompatButton btnSignUp;
 
+    @BindView(R.id.progressBar_load)
+    ProgressBar loadProgressBar;
+
     private UserContract.Presenter presenter;
-    private ProgressDialog progressDialog;// TODO: 17-8-27 被废弃了，ProgressBar替换？？
 
     @OnClick(R.id.text_login)
     void onClickLogin() {
@@ -51,53 +59,16 @@ public class RegisterActivity extends BaseActivity implements UserContract.View{
         new UserPresenter(this, UserModel.getInstance());
     }
 
-    private void initView(){
+    private void initView() {
         btnSignUp.setEnabled(false);
         nameEditTx.addTextChangedListener(new TextChange());
         accountEditTx.addTextChangedListener(new TextChange());
         pwEditTx.addTextChangedListener(new TextChange());
-        initProgressDialog();
-    }
-
-    private void initProgressDialog() {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("登录");
-        progressDialog.setMessage("加载中...");
     }
 
     @OnClick(R.id.btn_sign_up)
     public void onClick() {
-        presenter.register(nameEditTx,accountEditTx,pwEditTx);
-//        JMessageClient.register(accountEditTx.getText().toString().trim(), pwEditTx.getText().toString().trim(), new BasicCallback() {
-//            @Override
-//            public void gotResult(int i, String s) {
-//                if(i==0){
-//                    Log.e(RegisterActivity.this.getPackageName(),"onClick");
-//                    Toast.makeText(RegisterActivity.this,"注册成功",Toast.LENGTH_SHORT).show();
-//                    JMessageClient.login(accountEditTx.getText().toString().trim(), pwEditTx.getText().toString().trim(), new BasicCallback() {
-//                        @Override
-//                        public void gotResult(int i, String s) {
-//                            if(i==0){
-//                                UserInfo userInfo = JMessageClient.getMyInfo();
-//                                userInfo.setNickname(NameEditTx.getText().toString().trim());
-//                                Log.e("TAG",userInfo.getNickname());
-//                                JMessageClient.updateMyInfo(UserInfo.Field.nickname, userInfo, new BasicCallback() {
-//                                    @Override
-//                                    public void gotResult(int i, String s) {
-//                                        if(i==0){
-//                                            Log.e("TAG","上传数据成功");
-//                                        }else {
-//                                            Log.e("TAG","上传数据失败");
-//                                        }
-//                                    }
-//                                });
-//                                openActivity(MainActivity.class,null);
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//        });
+        presenter.register(nameEditTx, accountEditTx, pwEditTx);
     }
 
     @Override
@@ -107,23 +78,25 @@ public class RegisterActivity extends BaseActivity implements UserContract.View{
 
     @Override
     public void showHome() {
-        // TODO: 17-8-27 loginActivity 是不是还没有删除？？加个controller??
+        ActivityCollector.finishAll();
         openActivity(MainActivity.class, null);
-        finish();
+    }
+
+
+    @Override
+    public void showNotifyInfo(String text) {
+        shortToast(text);
     }
 
     @Override
     public void showProgress(boolean bool) {
         if (bool) {
-            progressDialog.show();
+            loadProgressBar.setVisibility(View.VISIBLE);
+            registerFormScroll.setVisibility(View.GONE);
         } else {
-            progressDialog.dismiss();
+            loadProgressBar.setVisibility(View.GONE);
+            registerFormScroll.setVisibility(View.VISIBLE);
         }
-    }
-
-    @Override
-    public void showNotifyInfo(String text) {
-        shortToast(text);
     }
 
     private class TextChange implements TextWatcher {
@@ -135,10 +108,10 @@ public class RegisterActivity extends BaseActivity implements UserContract.View{
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            if(TextUtils.isEmpty(nameEditTx.getText().toString().trim())||TextUtils.isEmpty(accountEditTx.getText().toString().trim())||
-                   TextUtils.isEmpty(pwEditTx.getText().toString().trim()) ){
+            if (TextUtils.isEmpty(nameEditTx.getText().toString().trim()) || TextUtils.isEmpty(accountEditTx.getText().toString().trim()) ||
+                    TextUtils.isEmpty(pwEditTx.getText().toString().trim())) {
                 btnSignUp.setEnabled(false);
-            }else {
+            } else {
                 btnSignUp.setEnabled(true);
             }
         }

@@ -1,8 +1,10 @@
 package com.nexuslink.wenavi.ui.login;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 
 import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseActivity;
@@ -23,6 +25,12 @@ public class LoginActivity extends BaseActivity implements UserContract.View {
     @BindView(R.id.editTx_password)
     EditText pwEditTx;
 
+    @BindView(R.id.progressBar_load)
+    ProgressBar loadProgressBar;
+
+    @BindView(R.id.scroll_login_form)
+    ScrollView loginFormScroll;
+
     @OnClick(R.id.text_sign_up)
     void onSignUpClick() {
         openActivity(RegisterActivity.class, null);
@@ -30,25 +38,17 @@ public class LoginActivity extends BaseActivity implements UserContract.View {
 
     @OnClick(R.id.btn_login)
     void onLoginClick() {
-        presenter.login(accountEditTx,pwEditTx);
+        presenter.login(accountEditTx, pwEditTx);
     }
 
     private UserContract.Presenter presenter;
-    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        initProgressDialog();
-        new UserPresenter(this,UserModel.getInstance());
-    }
-
-    private void initProgressDialog() {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("登录");
-        progressDialog.setMessage("加载中...");
+        new UserPresenter(this, UserModel.getInstance());
     }
 
     @Override
@@ -66,9 +66,11 @@ public class LoginActivity extends BaseActivity implements UserContract.View {
     @Override
     public void showProgress(boolean bool) {
         if (bool) {
-            progressDialog.show();
+            loadProgressBar.setVisibility(View.VISIBLE);
+            loginFormScroll.setVisibility(View.GONE);
         } else {
-            progressDialog.dismiss();
+            loadProgressBar.setVisibility(View.GONE);
+            loginFormScroll.setVisibility(View.VISIBLE);
         }
     }
 

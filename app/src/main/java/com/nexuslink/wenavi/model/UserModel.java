@@ -64,7 +64,7 @@ public class UserModel implements IUserModel {
 
     }
 
-    public void setTestCallback(UserPresenter userPresenter) {
+    public void setNetCallback(UserPresenter userPresenter) {
         netCallBack = userPresenter;
     }
 

@@ -1,5 +1,6 @@
 package com.nexuslink.wenavi.presenter;
 
+import android.util.Log;
 import android.widget.EditText;
 
 import com.nexuslink.wenavi.callback.NetCallBack;
@@ -9,8 +10,6 @@ import com.nexuslink.wenavi.model.UserModel;
 
 import java.util.Objects;
 
-import cn.jpush.im.android.api.JMessageClient;
-import cn.jpush.im.android.api.model.UserInfo;
 
 /**
  * Created by aplrye on 17-8-27.
@@ -28,7 +27,7 @@ public class UserPresenter implements UserContract.Presenter, NetCallBack {
         this.view = view;
         this.model = model;
         view.setPresenter(this);
-        model.setTestCallback(this);
+        model.setNetCallback(this);
     }
 
     @Override
@@ -66,15 +65,13 @@ public class UserPresenter implements UserContract.Presenter, NetCallBack {
     public void requestOk(int flag) {
         switch (flag) {
             case Constant.REGISTER:
-                view.showProgress(false);
-                view.showNotifyInfo("success");
+                view.showNotifyInfo("register success, try login");
                 view.showProgress(true);
                 model.login(account, pw);
                 break;
             case Constant.LOGIN:
                 //直接登录的话没有updateInfo过程
                 if (name != null) {
-                    // TODO: 17-8-27 改变title
                     view.showProgress(false);
                     model.updateNickName(name);
                 } else {
@@ -94,6 +91,7 @@ public class UserPresenter implements UserContract.Presenter, NetCallBack {
     @Override
     public void requestFail(int flag, String s) {
         view.showProgress(false);
+        Log.d("Debug", "requestFail");
         view.showNotifyInfo(s);
     }
 }
