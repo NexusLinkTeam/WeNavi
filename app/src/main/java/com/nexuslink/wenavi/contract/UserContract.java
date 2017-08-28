@@ -9,8 +9,9 @@ import com.nexuslink.wenavi.base.BaseView;
  * Created by aplrye on 17-8-27.
  */
 
-public interface LoginContract {
+public interface UserContract {
     interface Presenter extends BasePresenter {
+        void register(EditText nameEditTx,EditText accountEditTx, EditText pwEditTx);
 
         void login(EditText accountEditTx, EditText pwEditTx);
     }

@@ -5,33 +5,44 @@ import android.support.v7.widget.AppCompatButton;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 
 import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseActivity;
+import com.nexuslink.wenavi.contract.UserContract;
+import com.nexuslink.wenavi.model.UserModel;
+import com.nexuslink.wenavi.presenter.UserPresenter;
 import com.nexuslink.wenavi.ui.main.MainActivity;
+import com.nexuslink.wenavi.util.ActivityCollector;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.jpush.im.android.api.JMessageClient;
-import cn.jpush.im.android.api.model.UserInfo;
-import cn.jpush.im.api.BasicCallback;
 
-public class RegisterActivity extends BaseActivity {
+public class RegisterActivity extends BaseActivity implements UserContract.View {
 
     @BindView(R.id.editTx_name)
-    EditText NameEditTx;
+    EditText nameEditTx;
 
     @BindView(R.id.editTx_account)
     EditText accountEditTx;
 
     @BindView(R.id.editTx_password)
     EditText pwEditTx;
+
+    @BindView(R.id.scroll_register_form)
+    ScrollView registerFormScroll;
+
     @BindView(R.id.btn_sign_up)
     AppCompatButton btnSignUp;
+
+    @BindView(R.id.progressBar_load)
+    ProgressBar loadProgressBar;
+
+    private UserContract.Presenter presenter;
 
     @OnClick(R.id.text_login)
     void onClickLogin() {
@@ -44,50 +55,51 @@ public class RegisterActivity extends BaseActivity {
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
         initView();
+
+        new UserPresenter(this, UserModel.getInstance());
     }
 
-    private void initView(){
+    private void initView() {
         btnSignUp.setEnabled(false);
-        NameEditTx.addTextChangedListener(new TextChange());
+        nameEditTx.addTextChangedListener(new TextChange());
         accountEditTx.addTextChangedListener(new TextChange());
         pwEditTx.addTextChangedListener(new TextChange());
     }
+
     @OnClick(R.id.btn_sign_up)
     public void onClick() {
-        Log.e(this.getPackageName(),"onClick");
-        JMessageClient.register(accountEditTx.getText().toString().trim(), pwEditTx.getText().toString().trim(), new BasicCallback() {
-            @Override
-            public void gotResult(int i, String s) {
-                if(i==0){
-                    Log.e(RegisterActivity.this.getPackageName(),"onClick");
-                    Toast.makeText(RegisterActivity.this,"注册成功",Toast.LENGTH_SHORT).show();
-                    JMessageClient.login(accountEditTx.getText().toString().trim(), pwEditTx.getText().toString().trim(), new BasicCallback() {
-                        @Override
-                        public void gotResult(int i, String s) {
-                            if(i==0){
-                                UserInfo userInfo = JMessageClient.getMyInfo();
-                                userInfo.setNickname(NameEditTx.getText().toString().trim());
-                                Log.e("TAG",userInfo.getNickname());
-                                JMessageClient.updateMyInfo(UserInfo.Field.nickname, userInfo, new BasicCallback() {
-                                    @Override
-                                    public void gotResult(int i, String s) {
-                                        if(i==0){
-                                            Log.e("TAG","上传数据成功");
-                                        }else {
-                                            Log.e("TAG","上传数据失败");
-                                        }
-                                    }
-                                });
-                                openActivity(MainActivity.class,null);
-                            }
-                        }
-                    });
-                }
-            }
-        });
+        presenter.register(nameEditTx, accountEditTx, pwEditTx);
     }
 
-    class TextChange implements TextWatcher {
+    @Override
+    public void setPresenter(UserContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void showHome() {
+        ActivityCollector.finishAll();
+        openActivity(MainActivity.class, null);
+    }
+
+
+    @Override
+    public void showNotifyInfo(String text) {
+        shortToast(text);
+    }
+
+    @Override
+    public void showProgress(boolean bool) {
+        if (bool) {
+            loadProgressBar.setVisibility(View.VISIBLE);
+            registerFormScroll.setVisibility(View.GONE);
+        } else {
+            loadProgressBar.setVisibility(View.GONE);
+            registerFormScroll.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private class TextChange implements TextWatcher {
 
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -96,10 +108,10 @@ public class RegisterActivity extends BaseActivity {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            if(TextUtils.isEmpty(NameEditTx.getText().toString().trim())||TextUtils.isEmpty(accountEditTx.getText().toString().trim())||
-                   TextUtils.isEmpty(pwEditTx.getText().toString().trim()) ){
+            if (TextUtils.isEmpty(nameEditTx.getText().toString().trim()) || TextUtils.isEmpty(accountEditTx.getText().toString().trim()) ||
+                    TextUtils.isEmpty(pwEditTx.getText().toString().trim())) {
                 btnSignUp.setEnabled(false);
-            }else {
+            } else {
                 btnSignUp.setEnabled(true);
             }
         }
