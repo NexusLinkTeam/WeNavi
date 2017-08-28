@@ -81,7 +81,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddFriendActivity"
+        <activity android:name=".ui.friend.AddFriendActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ui.friend.FriendVerifyActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <!-- Required SDK 核心功能-->
         <!-- 可配置android:process参数将PushService放在其他进程中 -->

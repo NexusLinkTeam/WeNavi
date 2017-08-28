@@ -11,4 +11,6 @@
     <string name="position_unknown">Position Unknown</string>
     <string name="invite">invite</string>
     <string name="add_friends">Add friends</string>
+    <string name="agree">同意</string>
+    <string name="refuse">拒绝</string>
 </resources>

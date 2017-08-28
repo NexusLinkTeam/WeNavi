@@ -1,4 +1,4 @@
-package com.nexuslink.wenavi;
+package com.nexuslink.wenavi.ui.friend;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseActivity;
 import com.wevey.selector.dialog.MDEditDialog;
 

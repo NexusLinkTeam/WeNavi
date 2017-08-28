@@ -32,7 +32,7 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.amap.api.maps.model.Polyline;
 import com.amap.api.maps.model.PolylineOptions;
-import com.nexuslink.wenavi.AddFriendActivity;
+import com.nexuslink.wenavi.ui.friend.AddFriendActivity;
 import com.nexuslink.wenavi.BaseApp;
 import com.nexuslink.wenavi.DaoSession;
 import com.nexuslink.wenavi.FriendVerify;
@@ -40,6 +40,7 @@ import com.nexuslink.wenavi.FriendVerifyDao;
 import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseActivity;
 import com.nexuslink.wenavi.callback.OnItemClickListener;
+import com.nexuslink.wenavi.ui.friend.FriendVerifyActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -313,7 +314,7 @@ public class MainActivity extends BaseActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_friend_verify) {
-
+            startActivity(new Intent(this, FriendVerifyActivity.class));
         } else if (id == R.id.add_friends) {
             startActivity(new Intent(this, AddFriendActivity.class));
             return true;
@@ -364,7 +365,6 @@ public class MainActivity extends BaseActivity
         //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
         mMapView.onResume();
         List<FriendVerify> list = verifyDao.queryBuilder().listLazy();
-
         Log.e("TAG",""+list.size());
         if(list.size()==0){
             friendVerificationNum.setVisibility(View.INVISIBLE);
