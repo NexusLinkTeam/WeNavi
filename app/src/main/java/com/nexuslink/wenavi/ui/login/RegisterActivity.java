@@ -2,11 +2,14 @@ package com.nexuslink.wenavi.ui.login;
 
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 
@@ -23,6 +26,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class RegisterActivity extends BaseActivity implements UserContract.View {
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @BindView(R.id.editTx_name)
     EditText nameEditTx;
@@ -55,7 +61,7 @@ public class RegisterActivity extends BaseActivity implements UserContract.View 
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
         initView();
-
+        toolbar.setTitle(R.string.register);
         new UserPresenter(this, UserModel.getInstance());
     }
 
@@ -64,6 +70,17 @@ public class RegisterActivity extends BaseActivity implements UserContract.View 
         nameEditTx.addTextChangedListener(new TextChange());
         accountEditTx.addTextChangedListener(new TextChange());
         pwEditTx.addTextChangedListener(new TextChange());
+        // TODO: 17-8-29 待封装
+        try {
+            ImageView bottomBar = (ImageView) findViewById(R.id.bar_bottom);
+            if (isBottomNaviBarExist(this)) {
+                bottomBar.setVisibility(View.VISIBLE);
+            } else {
+                bottomBar.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @OnClick(R.id.btn_sign_up)

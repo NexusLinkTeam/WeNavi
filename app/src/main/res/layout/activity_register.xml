@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true">
 
+    <android.support.v7.widget.Toolbar
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@drawable/shape_gradient"
+        android:paddingTop="24dp"
+        app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
     <ProgressBar
+        android:layout_below="@id/toolbar"
         android:visibility="gone"
         android:id="@+id/progressBar_load"
         android:layout_marginTop="56dp"
@@ -13,6 +24,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <ScrollView
+        android:layout_above="@id/bar_bottom"
+        android:layout_below="@id/toolbar"
         android:id="@+id/scroll_register_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -20,15 +33,16 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="56dp"
             android:paddingLeft="24dp"
             android:paddingRight="24dp">
 
             <TextView
-                android:textSize="48sp"
+                android:textColor="@color/accent"
+                android:layout_marginTop="36dp"
+                android:textSize="32sp"
                 android:text="Register"
                 android:layout_width="wrap_content"
-                android:layout_height="72dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:layout_gravity="center_horizontal" />
 
@@ -73,13 +87,16 @@
 
             <!-- SignUp Button -->
             <android.support.v7.widget.AppCompatButton
+                android:textColor="@color/icons"
+                android:backgroundTint="@color/accent"
                 android:id="@+id/btn_sign_up"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
                 android:padding="12dp"
-                android:text="Create Account"/>
+                android:text="Create Account"
+                tools:targetApi="lollipop" />
 
             <TextView android:id="@+id/text_login"
                 android:layout_width="fill_parent"
@@ -91,5 +108,12 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <ImageView
+        android:id="@+id/bar_bottom"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/shape_gradient"
+        android:layout_width="match_parent"
+        android:layout_height="48dp" />
 
 </RelativeLayout>
