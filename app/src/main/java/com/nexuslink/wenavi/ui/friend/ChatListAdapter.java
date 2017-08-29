@@ -1,4 +1,4 @@
-package com.nexuslink.wenavi.ui.main;
+package com.nexuslink.wenavi.ui.friend;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.nexuslink.wenavi.R;
+import com.nexuslink.wenavi.ui.main.HeaderViewHolder;
 
 /**
  * Created by alphrye on 17-8-7.

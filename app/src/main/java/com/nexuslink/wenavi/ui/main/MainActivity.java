@@ -20,6 +20,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -40,6 +41,8 @@ import com.nexuslink.wenavi.FriendVerifyDao;
 import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseActivity;
 import com.nexuslink.wenavi.callback.OnItemClickListener;
+import com.nexuslink.wenavi.ui.friend.ChatListAdapter;
+import com.nexuslink.wenavi.ui.friend.FriendListController;
 import com.nexuslink.wenavi.ui.friend.FriendVerifyActivity;
 
 import java.text.SimpleDateFormat;
@@ -49,8 +52,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jpush.im.android.api.ContactManager;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
+import cn.jpush.im.android.api.callback.GetUserInfoListCallback;
 import cn.jpush.im.android.api.event.ContactNotifyEvent;
 import cn.jpush.im.android.api.model.UserInfo;
 
@@ -82,13 +87,10 @@ public class MainActivity extends BaseActivity
     @BindView(R.id.text_position)
     TextView position;
     private boolean isChatting = false;//是否正在聊天界面
+    private FriendListController controller;
 
     //测试数据
-    private String[] names = {
-            "Jack", "Tom", "Carina", "Charlotte", "Christina",
-            "Juliana", "Maureen", "Milly", "Oprah", "Paula",
-            "Rita", "Sandy", "Yolanda", "Ken", "Kent"
-    };
+    private List<String> name = new ArrayList<>();
 
     private int avatars[] = {
             R.drawable.t1,
@@ -191,23 +193,7 @@ public class MainActivity extends BaseActivity
         //定位
         initBottomSheet();
         //请求完数据后回调部分
-        FriendListAdapter friendListAdapter = new FriendListAdapter(this, avatars, names);
-        mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mFriendsRecyclerView.setAdapter(friendListAdapter);
-        friendListAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick() {
-                //通过设置可见度切换
-                mFriendsRecyclerView.setVisibility(View.GONE);
-                mChatRecyclerView.setVisibility(View.VISIBLE);
 
-                ChatListAdapter chatListAdapter = new ChatListAdapter(MainActivity.this);
-                mChatRecyclerView.setAdapter(chatListAdapter);
-                mChatRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-
-                isChatting = true;
-            }
-        });
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -227,6 +213,40 @@ public class MainActivity extends BaseActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    /**
+     * 请求好友列表
+     */
+    private void getFriendList(){
+//        ContactManager.getFriendList(new GetUserInfoListCallback() {
+//            @Override
+//            public void gotResult(int i, String s, List<UserInfo> list) {
+//                if(i==0){
+//                    name.clear();
+//                    for(UserInfo info:list){
+//                        name.add(info.getNickname());
+//                    }
+//                    friendListAdapter = new FriendListAdapter(MainActivity.this, avatars,name);
+//                    mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+//                    mFriendsRecyclerView.setAdapter(friendListAdapter);
+//                    friendListAdapter.setOnItemClickListener(new OnItemClickListener() {
+//                        @Override
+//                        public void onItemClick() {
+//                            //通过设置可见度切换
+//                            mFriendsRecyclerView.setVisibility(View.GONE);
+//                            mChatRecyclerView.setVisibility(View.VISIBLE);
+//                            ChatListAdapter chatListAdapter = new ChatListAdapter(MainActivity.this);
+//                            mChatRecyclerView.setAdapter(chatListAdapter);
+//                            mChatRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+//                            isChatting = true;
+//                        }
+//                    });
+//                }else {
+//                    Toast.makeText(MainActivity.this,"获取好友列表失败",Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+        controller = new FriendListController(this,mFriendsRecyclerView,mChatRecyclerView);
+    }
 
     private void initBottomSheet() {
         mFriendsRecyclerView = (RecyclerView) findViewById(R.id.sheet_bottom_friends);
@@ -364,6 +384,7 @@ public class MainActivity extends BaseActivity
         super.onResume();
         //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
         mMapView.onResume();
+        getFriendList();
         List<FriendVerify> list = verifyDao.queryBuilder().listLazy();
         Log.e("TAG",""+list.size());
         if(list.size()==0){

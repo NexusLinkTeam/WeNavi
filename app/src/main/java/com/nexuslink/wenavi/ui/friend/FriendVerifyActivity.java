@@ -24,6 +24,7 @@ import butterknife.ButterKnife;
 import cn.jpush.im.android.api.ContactManager;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
+import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 
@@ -112,12 +113,22 @@ public class FriendVerifyActivity extends BaseActivity implements FriendVerifyAd
             @Override
             public void gotResult(int i, String s) {
                 if(i==0){
-                    Toast.makeText(FriendVerifyActivity.this,"添加好友成功",Toast.LENGTH_SHORT).show();
-                    Log.e("TAG",uId);
-                    List<FriendVerify> verify = verifyDao.queryBuilder().where(FriendVerifyDao.Properties.UserName.eq(uId)).list();
-                    Log.e("TAG","恩恩"+verify.toString());
+                    Message message = JMessageClient.createSingleTextMessage(uId,"我们已经成为好友啦");
+                    message.setOnSendCompleteCallback(new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            if(i==0){
+                                Toast.makeText(FriendVerifyActivity.this,"添加好友成功",Toast.LENGTH_SHORT).show();
+                                FriendVerify verify = verifyDao.queryBuilder().where(FriendVerifyDao.Properties.UserName.eq(uId)).unique();
+                                verifyDao.deleteByKey(verify.getId());
+                                mAdapter.deleteData(verify);
+                            }else {
+                                Toast.makeText(FriendVerifyActivity.this,"添加好友失败",Toast.LENGTH_SHORT).show();
+                            }
+                        }
 
-                    finish();
+                    });
+                    JMessageClient.sendMessage(message);
                 }
             }
         });
@@ -130,13 +141,18 @@ public class FriendVerifyActivity extends BaseActivity implements FriendVerifyAd
             public void gotResult(int i, String s) {
                 if(i==0){
                     Toast.makeText(FriendVerifyActivity.this,"已拒绝用户"+uId+"的好友请求",Toast.LENGTH_SHORT).show();
-                    Log.e("TAG",uId);
                     FriendVerify verify = verifyDao.queryBuilder().where(FriendVerifyDao.Properties.UserName.eq(uId)).unique();
-                    Log.e("TAG","恩恩"+verify.toString());
                     verifyDao.deleteByKey(verify.getId());
-                    finish();
+                    mAdapter.deleteData(verify);
                 }
             }
         });
     }
+
+    @Override
+    public void onFinish() {
+        finish();
+    }
+
+
 }
