@@ -1,15 +1,20 @@
 package com.nexuslink.wenavi.ui.login;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 
+import com.google.gson.jpush.Gson;
 import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseActivity;
+import com.nexuslink.wenavi.common.Constant;
 import com.nexuslink.wenavi.contract.UserContract;
 import com.nexuslink.wenavi.model.UserModel;
+import com.nexuslink.wenavi.model.WeNaviLocation;
+import com.nexuslink.wenavi.model.WeNaviMessage;
 import com.nexuslink.wenavi.presenter.UserPresenter;
 import com.nexuslink.wenavi.ui.main.MainActivity;
 
