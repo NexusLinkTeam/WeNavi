@@ -10,7 +10,7 @@
     <item
         android:id="@+id/add_friends"
         android:orderInCategory="100"
-        android:icon="@drawable/search_logo"
+        android:icon="@drawable/search"
         android:title="@string/add_friends"
         app:showAsAction="ifRoom" />
 

@@ -2,6 +2,7 @@ package com.nexuslink.wenavi.base;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 
 public class BaseActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

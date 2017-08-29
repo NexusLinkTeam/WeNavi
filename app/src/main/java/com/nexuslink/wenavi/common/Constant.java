@@ -13,4 +13,6 @@ public class Constant {
     public static final int CONNECT_MESSAGE = 1;
     public static final int LOCATION_MESSAGE = 2;
     public static final int DRAW_MESSAGE = 3;
+
+    public static final String IS_LOGIN = "is_login";
 }
