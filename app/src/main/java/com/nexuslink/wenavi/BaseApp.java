@@ -12,6 +12,7 @@ import cn.jpush.im.android.api.JMessageClient;
 
 public class BaseApp extends Application {
     private static Context context;
+    public static final String APPKEY = "31b2964462b4db5e14442b9f";
     @Override
     public void onCreate() {
         super.onCreate();

@@ -16,5 +16,6 @@ public class MyClass {
         friendVerify.addStringProperty("nickName");
         friendVerify.addStringProperty("hello");
         friendVerify.addStringProperty("userName");
+        friendVerify.addIdProperty();
     }
 }

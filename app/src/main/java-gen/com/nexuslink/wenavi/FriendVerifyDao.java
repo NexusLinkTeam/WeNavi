@@ -14,7 +14,7 @@ import com.nexuslink.wenavi.FriendVerify;
 /** 
  * DAO for table FRIEND_VERIFY.
 */
-public class FriendVerifyDao extends AbstractDao<FriendVerify, Void> {
+public class FriendVerifyDao extends AbstractDao<FriendVerify, Long> {
 
     public static final String TABLENAME = "FRIEND_VERIFY";
 
@@ -27,6 +27,7 @@ public class FriendVerifyDao extends AbstractDao<FriendVerify, Void> {
         public final static Property NickName = new Property(1, String.class, "nickName", false, "NICK_NAME");
         public final static Property Hello = new Property(2, String.class, "hello", false, "HELLO");
         public final static Property UserName = new Property(3, String.class, "userName", false, "USER_NAME");
+        public final static Property Id = new Property(4, Long.class, "id", true, "_id");
     };
 
 
@@ -45,7 +46,8 @@ public class FriendVerifyDao extends AbstractDao<FriendVerify, Void> {
                 "'AVATAR' TEXT," + // 0: avatar
                 "'NICK_NAME' TEXT," + // 1: nickName
                 "'HELLO' TEXT," + // 2: hello
-                "'USER_NAME' TEXT);"); // 3: userName
+                "'USER_NAME' TEXT," + // 3: userName
+                "'_id' INTEGER PRIMARY KEY );"); // 4: id
     }
 
     /** Drops the underlying database table. */
@@ -78,12 +80,17 @@ public class FriendVerifyDao extends AbstractDao<FriendVerify, Void> {
         if (userName != null) {
             stmt.bindString(4, userName);
         }
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(5, id);
+        }
     }
 
     /** @inheritdoc */
     @Override
-    public Void readKey(Cursor cursor, int offset) {
-        return null;
+    public Long readKey(Cursor cursor, int offset) {
+        return cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4);
     }    
 
     /** @inheritdoc */
@@ -93,7 +100,8 @@ public class FriendVerifyDao extends AbstractDao<FriendVerify, Void> {
             cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // avatar
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // nickName
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // hello
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // userName
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // userName
+            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4) // id
         );
         return entity;
     }
@@ -105,19 +113,24 @@ public class FriendVerifyDao extends AbstractDao<FriendVerify, Void> {
         entity.setNickName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setHello(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setUserName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setId(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
      }
     
     /** @inheritdoc */
     @Override
-    protected Void updateKeyAfterInsert(FriendVerify entity, long rowId) {
-        // Unsupported or missing PK type
-        return null;
+    protected Long updateKeyAfterInsert(FriendVerify entity, long rowId) {
+        entity.setId(rowId);
+        return rowId;
     }
     
     /** @inheritdoc */
     @Override
-    public Void getKey(FriendVerify entity) {
-        return null;
+    public Long getKey(FriendVerify entity) {
+        if(entity != null) {
+            return entity.getId();
+        } else {
+            return null;
+        }
     }
 
     /** @inheritdoc */
