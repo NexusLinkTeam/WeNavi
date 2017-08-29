@@ -3,10 +3,12 @@ package com.nexuslink.wenavi.presenter;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.nexuslink.wenavi.BaseApp;
 import com.nexuslink.wenavi.callback.NetCallBack;
 import com.nexuslink.wenavi.common.Constant;
 import com.nexuslink.wenavi.contract.UserContract;
 import com.nexuslink.wenavi.model.UserModel;
+import com.nexuslink.wenavi.util.SPUtil;
 
 import java.util.Objects;
 
@@ -65,27 +67,30 @@ public class UserPresenter implements UserContract.Presenter, NetCallBack {
     public void requestOk(int flag) {
         switch (flag) {
             case Constant.REGISTER:
-                view.showNotifyInfo("register success, try login");
+                view.showNotifyInfo("Register success, try login");
                 view.showProgress(true);
                 model.login(account, pw);
                 break;
             case Constant.LOGIN:
                 //直接登录的话没有updateInfo过程
                 if (name != null) {
-                    view.showProgress(false);
                     model.updateNickName(name);
                 } else {
-                    view.showProgress(false);
-                    view.showNotifyInfo("Welcome");
                     view.showHome();
+                    view.showNotifyInfo("Welcome");
+                    saveStatus();
                 }
                 break;
             case Constant.UPDATE:
-                view.showProgress(false);
-                view.showNotifyInfo("Welcome");
                 view.showHome();
+                view.showNotifyInfo("Welcome");
+                saveStatus();
                 break;
         }
+    }
+
+    private void saveStatus() {
+        SPUtil.putAndApply(BaseApp.getBaseApplicationContext(),Constant.IS_LOGIN,true);
     }
 
     @Override

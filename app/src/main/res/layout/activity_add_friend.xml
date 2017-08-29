@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="21dp"
-            android:src="@drawable/search1"/>
+            android:src="@drawable/search"/>
 
         <EditText
             android:id="@+id/et_searchUser"
