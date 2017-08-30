@@ -17,11 +17,12 @@ public class ChatListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public static final int TYPE_HEADER = 0;
     public static final int TYPE_BODY = 1;
-
+    private String userName;
     private Context mContext;
 
-    public ChatListAdapter(Context context) {
+    public ChatListAdapter(Context context,String userName) {
         this.mContext = context;
+        this.userName = userName;
     }
 
     @Override

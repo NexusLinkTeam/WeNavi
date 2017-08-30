@@ -4,13 +4,16 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -20,7 +23,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -33,15 +35,13 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.amap.api.maps.model.Polyline;
 import com.amap.api.maps.model.PolylineOptions;
-import com.nexuslink.wenavi.ui.friend.AddFriendActivity;
 import com.nexuslink.wenavi.BaseApp;
 import com.nexuslink.wenavi.DaoSession;
 import com.nexuslink.wenavi.FriendVerify;
 import com.nexuslink.wenavi.FriendVerifyDao;
 import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseActivity;
-import com.nexuslink.wenavi.callback.OnItemClickListener;
-import com.nexuslink.wenavi.ui.friend.ChatListAdapter;
+import com.nexuslink.wenavi.ui.friend.AddFriendActivity;
 import com.nexuslink.wenavi.ui.friend.FriendListController;
 import com.nexuslink.wenavi.ui.friend.FriendVerifyActivity;
 
@@ -52,11 +52,11 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.jpush.im.android.api.ContactManager;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
-import cn.jpush.im.android.api.callback.GetUserInfoListCallback;
 import cn.jpush.im.android.api.event.ContactNotifyEvent;
+import cn.jpush.im.android.api.event.MessageEvent;
+import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.UserInfo;
 
 public class MainActivity extends BaseActivity
@@ -88,9 +88,8 @@ public class MainActivity extends BaseActivity
     TextView position;
     private boolean isChatting = false;//是否正在聊天界面
     private FriendListController controller;
-
-    //测试数据
-    private List<String> name = new ArrayList<>();
+    private HandlerThread handlerThread;
+    private BackgroundHanler backgroundHanler;
 
     private int avatars[] = {
             R.drawable.t1,
@@ -193,8 +192,9 @@ public class MainActivity extends BaseActivity
         //定位
         initBottomSheet();
         //请求完数据后回调部分
-
-
+        handlerThread = new HandlerThread("MainActivity");
+        handlerThread.start();
+        backgroundHanler = new BackgroundHanler(handlerThread.getLooper());
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -429,6 +429,7 @@ public class MainActivity extends BaseActivity
         //启动定位
         mLocationClient.startLocation();
         showLocation();
+        Log.e("主线程是:",Thread.currentThread().getName());
     }
 
     @Override
@@ -466,6 +467,23 @@ public class MainActivity extends BaseActivity
 
     }
 
+    /**
+     * 收到在线消息
+     * @param event
+     */
+    public void onEvent(MessageEvent event){
+        cn.jpush.im.android.api.model.Message message = event.getMessage();
+        UserInfo userInfo = (UserInfo) message.getTargetInfo();
+        String targetUserName = userInfo.getUserName();
+        Conversation conv = JMessageClient.getSingleConversation(targetUserName);
+        backgroundHanler.sendMessage(backgroundHanler.obtainMessage(REFRESH_CONVERSATION_LIST,conv));
+        Log.e("收到消息的线程是:",Thread.currentThread().getName());
+    }
+
+    /**
+     * 收到好友变更事件
+     * @param event
+     */
     public void onEvent(ContactNotifyEvent event) {
         Log.e("TAG","收到事件");
         switch (event.getType()) {
@@ -512,6 +530,22 @@ public class MainActivity extends BaseActivity
                 break;
             default:
                 break;
+        }
+    }
+    private static final int REFRESH_CONVERSATION_LIST = 0x3000;
+    public class BackgroundHanler  extends Handler{
+        public BackgroundHanler(Looper looper){
+            super(looper);
+        }
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case REFRESH_CONVERSATION_LIST:
+                    Conversation conv = (Conversation) msg.obj;
+                    controller.getAdapter().set2Top(conv);
+                    Log.e("background处理的线程是:",Thread.currentThread().getName());
+            }
         }
     }
 }

@@ -2,7 +2,9 @@ package com.nexuslink.wenavi.ui.friend;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,19 +33,43 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 
 
-class FriendListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FriendListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final int TYPE_HEADER = 0;
     public static final int TYPE_BODY = 1;
     private int headerCount = 1;//header数目
     private Context mContext;
     private OnItemClickListener mOnItemClickListener;
+    private static final int REFRESH_CONVERSATION_LIST = 0x3003;
     private List<Conversation> mDatas = new ArrayList<>();
-
+    private Handler mUiHandler = new Handler(){
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case REFRESH_CONVERSATION_LIST:
+                    Log.e("mUiHandler的线程",Thread.currentThread().getName());
+                    notifyDataSetChanged();
+            }
+        }
+    };
     public FriendListAdapter(Context context,List<Conversation> mDatas) {
         this.mContext = context;
         this.mDatas = mDatas;
     }
-
+    public void set2Top(Conversation  conv){
+        for(Conversation conversation :mDatas){
+            if(conversation.getId().equals(conv.getId())){
+                mDatas.remove(conversation);
+                mDatas.add(0,conv);
+                mUiHandler.removeMessages(REFRESH_CONVERSATION_LIST);
+                mUiHandler.sendEmptyMessageDelayed(REFRESH_CONVERSATION_LIST,200);
+                return;
+            }
+        }
+        mDatas.add(0,conv);
+        mUiHandler.removeMessages(REFRESH_CONVERSATION_LIST);
+        mUiHandler.sendEmptyMessageDelayed(REFRESH_CONVERSATION_LIST,200);
+    }
     @Override
     public int getItemViewType(int position) {
         if (position == 0) {
@@ -137,7 +163,7 @@ class FriendListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mOnItemClickListener.onItemClick();
+                    mOnItemClickListener.onItemClick(getPosition());
                 }
             });
         }
