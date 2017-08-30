@@ -1,12 +1,10 @@
 package com.nexuslink.wenavi.ui.friend;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.nexuslink.wenavi.FriendVerify;
@@ -53,11 +51,26 @@ public class FriendVerifyAdapter extends RecyclerView.Adapter<FriendVerifyAdapte
         list.add(entry);
         notifyDataSetChanged();
     }
+    public void deleteData(FriendVerify verify){
+        int num;
+        for(int i=0;i<list.size();i++){
+            if(verify.getUserName().equals(list.get(i).getUserName())){
+                num =i ;
+                list.remove(num);
+                notifyItemRemoved(num);
+                break;
+            }
+        }
+        if(list.size()==0){
+            listener.onFinish();
+        }
 
+    }
 
     interface OnItemClickListener{
         void onItemAgree(String uId);
         void onItemRefuse(String uId);
+        void onFinish();
     }
     OnItemClickListener listener;
     class VerifyViewHolder extends RecyclerView.ViewHolder{
