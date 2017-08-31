@@ -21,6 +21,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -86,10 +89,16 @@ public class MainActivity extends BaseActivity
     RecyclerView mChatRecyclerView;
     @BindView(R.id.text_position)
     TextView position;
+    @BindView(R.id.editTx_message)
+    EditText editText;
+    @BindView(R.id.view_bottom)
+    TextView bottomView;
     private boolean isChatting = false;//是否正在聊天界面
     private FriendListController controller;
     private HandlerThread handlerThread;
     private BackgroundHanler backgroundHanler;
+    private TranslateAnimation mUpAction;
+    private TranslateAnimation mDownAction;
 
     private int avatars[] = {
             R.drawable.t1,
@@ -134,6 +143,10 @@ public class MainActivity extends BaseActivity
 
         ButterKnife.bind(this);
 
+        initAnim();
+
+
+
         setSupportActionBar(toolbar);
 
         //bottomBar控制
@@ -159,6 +172,9 @@ public class MainActivity extends BaseActivity
             mUiSettings.setZoomPosition(1);
         }
         mUiSettings.setAllGesturesEnabled(false);
+
+        initListener();
+
         aMap.setOnMapTouchListener(new AMap.OnMapTouchListener() {
             int i = 0;
             List<LatLng> latLngs = new ArrayList<LatLng>();
@@ -213,6 +229,19 @@ public class MainActivity extends BaseActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    private void initListener() {
+        bottomView.setOnClickListener(this);
+    }
+
+    private void initAnim() {
+        mUpAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+                1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+        mDownAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+                -1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+    }
+
     /**
      * 请求好友列表
      */
@@ -255,9 +284,9 @@ public class MainActivity extends BaseActivity
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 switch (newState) {
-                    case BottomSheetBehavior.STATE_EXPANDED:
                     case BottomSheetBehavior.STATE_COLLAPSED:
-                        mBottomSheetBehaviorChat.setState(mBottomSheetBehaviorFriends.getState());
+                        bottomView.startAnimation(mUpAction);
+                        bottomView.setVisibility(View.VISIBLE);
                         break;
                 }
             }
@@ -463,8 +492,9 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onClick(View view) {
-
-
+        bottomView.startAnimation(mDownAction);
+        bottomView.setVisibility(View.GONE);
+        mBottomSheetBehaviorFriends.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     /**

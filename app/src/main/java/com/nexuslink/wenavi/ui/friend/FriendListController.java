@@ -47,8 +47,8 @@ public class FriendListController  implements OnItemClickListener {
                 mContext.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+
                         mDatas = JMessageClient.getConversationList();
-                        Log.e("initFriendListAdapter",mDatas.size()+"");
                         if(mDatas!=null&&mDatas.size()>0){
                             SortConvList sortConvList = new SortConvList();
                             Collections.sort(mDatas,sortConvList);
