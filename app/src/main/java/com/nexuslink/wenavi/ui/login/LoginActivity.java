@@ -18,6 +18,7 @@ import com.nexuslink.wenavi.model.UserModel;
 import com.nexuslink.wenavi.model.WeNaviLocation;
 import com.nexuslink.wenavi.model.WeNaviMessage;
 import com.nexuslink.wenavi.presenter.UserPresenter;
+import com.nexuslink.wenavi.ui.main.HomeActivity;
 import com.nexuslink.wenavi.ui.main.MainActivity;
 
 import butterknife.BindView;
@@ -86,7 +87,7 @@ public class LoginActivity extends BaseActivity implements UserContract.View {
 
     @Override
     public void showHome() {
-        openActivity(MainActivity.class, null);
+        openActivity(HomeActivity.class, null);
         finish();
     }
 

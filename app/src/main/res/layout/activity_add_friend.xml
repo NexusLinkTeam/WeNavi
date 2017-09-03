@@ -10,24 +10,17 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
         android:background="@drawable/shape_gradient"
-        android:paddingTop="25dp">
+        android:paddingTop="24dp">
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay">
-            <TextView
-                android:text="添加好友"
-                android:textColor="#ffffff"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textSize="18dp"
-                android:gravity="center"/>
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="37dp"
+        android:layout_height="44dp"
         android:background="#fff"
         android:orientation="horizontal">
 
@@ -35,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="21dp"
+            android:layout_marginLeft="16dp"
             android:src="@drawable/search"/>
 
         <EditText

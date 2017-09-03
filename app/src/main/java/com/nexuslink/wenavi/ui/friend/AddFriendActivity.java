@@ -1,6 +1,9 @@
 package com.nexuslink.wenavi.ui.friend;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -21,8 +24,6 @@ import android.widget.Toast;
 
 import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseActivity;
-import com.wevey.selector.dialog.MDEditDialog;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -57,7 +58,7 @@ public class AddFriendActivity extends BaseActivity {
     @BindView(R.id.avatar_friend)
     CircleImageView avatarFriend;
     UserInfo myInfo,friendInfo;
-    MDEditDialog dialog6;
+    AlertDialog dialog6;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +69,7 @@ public class AddFriendActivity extends BaseActivity {
     }
 
     private void initView() {
+        toolbar.setTitle(R.string.add_friends);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         btnSearch.setEnabled(false);
@@ -110,7 +112,36 @@ public class AddFriendActivity extends BaseActivity {
                 }
                 break;
             case R.id.search_addBtn:
-                dialog6 = new MDEditDialog.Builder(AddFriendActivity.this)
+                final String text = "嗨，我是"+myInfo.getNickname();
+                dialog6 = new AlertDialog.Builder(AddFriendActivity.this)
+                        .setTitle("打个招呼吧")
+                        .setMessage(text)
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .setPositiveButton("发送", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                ContactManager.sendInvitationRequest(friendInfo.getUserName(), "31b2964462b4db5e14442b9f", text, new BasicCallback() {
+                                    @Override
+                                    public void gotResult(int i, String s) {
+                                        if(i==0){
+                                            Toast.makeText(AddFriendActivity.this,"好友申请已发送，请等待对方确认",Toast.LENGTH_SHORT).show();
+                                            dialog6.dismiss();
+                                        }else {
+                                            Toast.makeText(AddFriendActivity.this,"好友申请发送失败",Toast.LENGTH_SHORT).show();
+                                            dialog6.dismiss();
+                                        }
+                                    }
+                                });
+                            }
+                        })
+                        .show();
+                /*dialog6 = new MDEditDialog.Builder(AddFriendActivity.this)
                         .setTitleVisible(true)
                         .setInputTpye(InputType.TYPE_CLASS_TEXT)
                         .setTitleText("打个招呼吧")
@@ -151,7 +182,7 @@ public class AddFriendActivity extends BaseActivity {
                         .setMinHeight(0.3f)
                         .setWidth(0.8f)
                         .build();
-                dialog6.show();
+                dialog6.show();*/
                 break;
             case R.id.search_result:
                 break;

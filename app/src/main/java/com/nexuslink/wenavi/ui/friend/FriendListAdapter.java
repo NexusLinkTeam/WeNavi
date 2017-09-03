@@ -41,35 +41,38 @@ public class FriendListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private OnItemClickListener mOnItemClickListener;
     private static final int REFRESH_CONVERSATION_LIST = 0x3003;
     private List<Conversation> mDatas = new ArrayList<>();
-    private Handler mUiHandler = new Handler(){
+    private Handler mUiHandler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case REFRESH_CONVERSATION_LIST:
-                    Log.e("mUiHandler的线程",Thread.currentThread().getName());
+                    Log.e("mUiHandler的线程", Thread.currentThread().getName());
                     notifyDataSetChanged();
             }
         }
     };
-    public FriendListAdapter(Context context,List<Conversation> mDatas) {
+
+    public FriendListAdapter(Context context, List<Conversation> mDatas) {
         this.mContext = context;
         this.mDatas = mDatas;
     }
-    public void set2Top(Conversation  conv){
-        for(Conversation conversation :mDatas){
-            if(conversation.getId().equals(conv.getId())){
+
+    public void set2Top(Conversation conv) {
+        for (Conversation conversation : mDatas) {
+            if (conversation.getId().equals(conv.getId())) {
                 mDatas.remove(conversation);
-                mDatas.add(0,conv);
+                mDatas.add(0, conv);
                 mUiHandler.removeMessages(REFRESH_CONVERSATION_LIST);
-                mUiHandler.sendEmptyMessageDelayed(REFRESH_CONVERSATION_LIST,200);
+                mUiHandler.sendEmptyMessageDelayed(REFRESH_CONVERSATION_LIST, 200);
                 return;
             }
         }
-        mDatas.add(0,conv);
+        mDatas.add(0, conv);
         mUiHandler.removeMessages(REFRESH_CONVERSATION_LIST);
-        mUiHandler.sendEmptyMessageDelayed(REFRESH_CONVERSATION_LIST,200);
+        mUiHandler.sendEmptyMessageDelayed(REFRESH_CONVERSATION_LIST, 200);
     }
+
     @Override
     public int getItemViewType(int position) {
         if (position == 0) {
@@ -95,37 +98,37 @@ public class FriendListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof FriendListViewHolder) {
-            Conversation convItem = mDatas.get(position-1);
-            if(convItem.getType().equals(ConversationType.single)){
+            Conversation convItem = mDatas.get(position - 1);
+            if (convItem.getType().equals(ConversationType.single)) {
                 UserInfo feedBack = (UserInfo) convItem.getTargetInfo();
                 if (feedBack.getUserName().equals("feedback_Android")) {
                     JMessageClient.deleteSingleConversation("feedback_Android", feedBack.getAppKey());
-                    mDatas.remove(position-1);
+                    mDatas.remove(position - 1);
                     notifyDataSetChanged();
                 }
             }
             Message lastMsg = convItem.getLatestMessage();
-            if(lastMsg != null){
-                String content = ((TextContent)lastMsg.getContent()).getText();
+            if (lastMsg != null) {
+                String content = ((TextContent) lastMsg.getContent()).getText();
                 ((FriendListViewHolder) holder).tvLastMsg.setText(content);
             }
             ((FriendListViewHolder) holder).nameText.setText(convItem.getTitle());
             UserInfo userInfo = (UserInfo) convItem.getTargetInfo();
-            if(userInfo!=null){
+            if (userInfo != null) {
                 userInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {
                     @Override
                     public void gotResult(int i, String s, Bitmap bitmap) {
-                        if(i ==0){
+                        if (i == 0) {
                             ((FriendListViewHolder) holder).avatarImg.setImageBitmap(bitmap);
-                        }else {
+                        } else {
                             ((FriendListViewHolder) holder).avatarImg.setImageResource(R.drawable.t2);
                         }
                     }
                 });
-            }else {
+            } else {
                 ((FriendListViewHolder) holder).avatarImg.setImageResource(R.drawable.t2);
             }
-            if(convItem.getUnReadMsgCnt()>0){
+            if (convItem.getUnReadMsgCnt() > 0) {
                 ((FriendListViewHolder) holder).converNum.setVisibility(View.VISIBLE);
                 if (convItem.getUnReadMsgCnt() < 100) {
                     ((FriendListViewHolder) holder).converNum.setText(String.valueOf(convItem.getUnReadMsgCnt()));
@@ -145,13 +148,19 @@ public class FriendListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         mOnItemClickListener = onItemClickListener;
     }
 
+    public void addConversations(List<Conversation> conversations) {
+        mDatas.clear();
+        mDatas.addAll(conversations);
+        notifyDataSetChanged();
+    }
+
     public class FriendListViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.name_friend)
         TextView nameText;
         @BindView(R.id.avatar_friend)
         CircleImageView avatarImg;
-        TextView tvLastMsg,converNum;
+        TextView tvLastMsg, converNum;
         private View itemView;
 
         public FriendListViewHolder(View itemView) {

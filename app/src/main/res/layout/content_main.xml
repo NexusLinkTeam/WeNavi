@@ -5,46 +5,86 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.amap.api.maps.MapView
-        android:layout_marginBottom="36dp"
-        android:id="@+id/view_map"
+        <com.amap.api.maps.MapView
+            android:id="@+id/view_map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/sheet_bottom_friends"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff"
+            app:behavior_hideable="false"
+            app:behavior_peekHeight="0dp"
+            app:layout_behavior="@string/bottom_sheet_behavior">
+        </android.support.v7.widget.RecyclerView>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/sheet_bottom_chat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff"
+            app:behavior_hideable="false"
+            app:behavior_peekHeight="0dp"
+            app:layout_behavior="@string/bottom_sheet_behavior">
+        </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:id="@+id/view_bottom_friends"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-     <TextView
-         android:layout_gravity="bottom"
-         android:gravity="center"
-         android:text="Click to see more"
-         android:id="@+id/view_bottom"
-         android:layout_width="match_parent"
-         android:layout_height="36dp" />
-
-    <EditText
-        android:visibility="gone"
-        android:id="@+id/editTx_message"
+        android:layout_height="52dp"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
-        android:hint="Touch to input"
-        android:layout_width="match_parent"
-        android:layout_height="36dp" />
+        android:background="@color/icons"
+        android:orientation="horizontal"
+        android:padding="8dp">
 
-    <android.support.v7.widget.RecyclerView
-        android:background="#ffffff"
-        app:layout_behavior="@string/bottom_sheet_behavior"
-        app:behavior_peekHeight="0dp"
-        app:behavior_hideable="false"
-        android:id="@+id/sheet_bottom_friends"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </android.support.v7.widget.RecyclerView>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/t1"
+            app:civ_border_color="@color/primary"
+            app:civ_border_width="2dp" />
 
-    <android.support.v7.widget.RecyclerView
+        <TextView
+            android:textStyle="bold"
+            android:id="@+id/text_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_weight="1"
+            android:text="Unknown Position" />
+
+        <TextView
+            android:text="会话列表"
+            android:id="@+id/tx_conver"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0"
+            android:textColor="@color/primary" />
+    </LinearLayout>
+
+    <LinearLayout
         android:visibility="gone"
-        android:background="#ffffff"
-        app:layout_behavior="@string/bottom_sheet_behavior"
-        app:behavior_peekHeight="180dp"
-        app:behavior_hideable="false"
-        android:id="@+id/sheet_bottom_chat"
+        android:id="@+id/view_bottom_chat"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="52dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:background="@color/icons"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <TextView
+            android:text="回到聊天"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/primary" />
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

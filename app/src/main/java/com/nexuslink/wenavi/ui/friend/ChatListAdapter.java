@@ -26,25 +26,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
-    public int getItemViewType(int position) {
-        if (position == 0) {
-            return TYPE_HEADER;
-        }
-        return TYPE_BODY;
-    }
-
-    @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = null;
-        switch (viewType) {
-            case TYPE_HEADER:
-                view = LayoutInflater.from(mContext).inflate(R.layout.item_header, parent, false);
-                return new HeaderViewHolder(view);
-            case TYPE_BODY:
-                view = LayoutInflater.from(mContext).inflate(R.layout.item_chat, parent, false);
-                return new ChatListAdapter.ChatListViewHolder(view);
-        }
-        return null;
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_chat, parent, false);
+        return new ChatListAdapter.ChatListViewHolder(view);
     }
 
     @Override

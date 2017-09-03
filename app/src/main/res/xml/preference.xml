@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="个人设置">
+        <Preference
+            android:summary="更换头像"
+            android:title="头像" />
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="主题设置">
+        <Preference
+            android:summary="个性化设置主色调"
+            android:title="Primary Color" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="其他设置">
+        <Preference
+            android:key="logout"
+            android:summary="退出当前帐号，返回登录界面"
+            android:title="退出登录" />
+    </PreferenceCategory>
+</PreferenceScreen>

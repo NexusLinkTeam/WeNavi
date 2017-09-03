@@ -1,8 +1,6 @@
 package com.nexuslink.wenavi.ui.main;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -19,12 +17,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
-import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
@@ -34,23 +28,19 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.UiSettings;
-import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.MyLocationStyle;
-import com.amap.api.maps.model.Polyline;
-import com.amap.api.maps.model.PolylineOptions;
-import com.nexuslink.wenavi.BaseApp;
+import com.nexuslink.wenavi.base.BaseApp;
 import com.nexuslink.wenavi.DaoSession;
 import com.nexuslink.wenavi.FriendVerify;
 import com.nexuslink.wenavi.FriendVerifyDao;
 import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseActivity;
+import com.nexuslink.wenavi.contract.MainContract;
 import com.nexuslink.wenavi.ui.friend.AddFriendActivity;
 import com.nexuslink.wenavi.ui.friend.FriendListController;
 import com.nexuslink.wenavi.ui.friend.FriendVerifyActivity;
+import com.nexuslink.wenavi.util.AnimUtil;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -65,10 +55,28 @@ import cn.jpush.im.android.api.model.UserInfo;
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, AMapLocationListener, View.OnClickListener {
 
-
-    private static final String TAG = "MainActivity";
     @BindView(R.id.friend_verification_num)
     TextView friendVerificationNum;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.view_map)
+    MapView mMapView;
+    @BindView(R.id.sheet_bottom_friends)
+    RecyclerView mFriendsRecyclerView;
+    @BindView(R.id.sheet_bottom_chat)
+    RecyclerView mChatRecyclerView;
+    /*@BindView(R.id.text_position)
+    TextView position;*/
+
+    @BindView(R.id.view_bottom_chat)
+    RelativeLayout bottomView;
+    /*@BindView(R.id.text_position)
+    TextView mPositionText;*/
+
+    private boolean isChatting = false;//是否正在聊天界面
+    private FriendListController controller;
+    private HandlerThread handlerThread;
+    private BackgroundHandler backgroundHandler;
     private AMap aMap;
     private AMapLocationClientOption mLocationOption;
     private AMapLocationClient mLocationClient;
@@ -79,27 +87,9 @@ public class MainActivity extends BaseActivity
     private double lngarray[] = new double[1024];
     DaoSession daoSession = BaseApp.getDaosession();
     FriendVerifyDao verifyDao = daoSession.getFriendVerifyDao();
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.view_map)
-    MapView mMapView;
-    @BindView(R.id.sheet_bottom_friends)
-    RecyclerView mFriendsRecyclerView;
-    @BindView(R.id.sheet_bottom_chat)
-    RecyclerView mChatRecyclerView;
-    @BindView(R.id.text_position)
-    TextView position;
-    @BindView(R.id.editTx_message)
-    EditText editText;
-    @BindView(R.id.view_bottom)
-    TextView bottomView;
-    private boolean isChatting = false;//是否正在聊天界面
-    private FriendListController controller;
-    private HandlerThread handlerThread;
-    private BackgroundHanler backgroundHanler;
-    private TranslateAnimation mUpAction;
-    private TranslateAnimation mDownAction;
+    private static final String TAG = "MainActivity";
 
+    //测试
     private int avatars[] = {
             R.drawable.t1,
             R.drawable.t2,
@@ -117,15 +107,33 @@ public class MainActivity extends BaseActivity
             R.drawable.t14,
             R.drawable.t15
     };
+    private MainContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TextView textView = (TextView) findViewById(R.id.text_position);
         //注册接收器
         JMessageClient.registerEventReceiver(this);
-        textView.setOnClickListener(new View.OnClickListener() {
+        ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        // TODO: 17-8-31 待封装
+        //bottomBar控制
+        /*try {
+            ImageView bottomBar = (ImageView) findViewById(R.id.bar_bottom);
+            Log.d(TAG, "onCreate: " + isBottomNaviBarExist(this));
+            if (isBottomNaviBarExist(this)) {
+                bottomBar.setVisibility(View.VISIBLE);
+            } else {
+                bottomBar.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+*/
+
+        // TODO: 17-8-31 恢复
+        /*mPositionText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 List<LatLng> latLngs = new ArrayList<LatLng>();
@@ -138,30 +146,7 @@ public class MainActivity extends BaseActivity
                 }
                 Polyline polyline = aMap.addPolyline(new PolylineOptions().addAll(latLngs).width(10).color(Color.argb(255, 1, 1, 1)));
             }
-        });
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        ButterKnife.bind(this);
-
-        initAnim();
-
-
-
-        setSupportActionBar(toolbar);
-
-        //bottomBar控制
-        try {
-            ImageView bottomBar = (ImageView) findViewById(R.id.bar_bottom);
-            Log.d(TAG, "onCreate: " + isBottomNaviBarExist(this));
-            if (isBottomNaviBarExist(this)) {
-                bottomBar.setVisibility(View.VISIBLE);
-            } else {
-                bottomBar.setVisibility(View.GONE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        });*/
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
         //Amap对象获取
@@ -174,8 +159,8 @@ public class MainActivity extends BaseActivity
         mUiSettings.setAllGesturesEnabled(false);
 
         initListener();
-
-        aMap.setOnMapTouchListener(new AMap.OnMapTouchListener() {
+        // TODO: 17-8-31 恢复
+        /*aMap.setOnMapTouchListener(new AMap.OnMapTouchListener() {
             int i = 0;
             List<LatLng> latLngs = new ArrayList<LatLng>();
             ;
@@ -204,21 +189,13 @@ public class MainActivity extends BaseActivity
                         i = 0;
                 }
             }
-        });
+        });*/
         //定位
         initBottomSheet();
         //请求完数据后回调部分
         handlerThread = new HandlerThread("MainActivity");
         handlerThread.start();
-        backgroundHanler = new BackgroundHanler(handlerThread.getLooper());
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bottomView.setVisibility(View.VISIBLE);
-            }
-        });*/
-
+        backgroundHandler = new BackgroundHandler(handlerThread.getLooper());
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -232,16 +209,6 @@ public class MainActivity extends BaseActivity
     private void initListener() {
         bottomView.setOnClickListener(this);
     }
-
-    private void initAnim() {
-        mUpAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
-                1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
-        mDownAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
-                -1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
-    }
-
     /**
      * 请求好友列表
      */
@@ -285,7 +252,7 @@ public class MainActivity extends BaseActivity
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 switch (newState) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
-                        bottomView.startAnimation(mUpAction);
+                        bottomView.startAnimation(AnimUtil.UPACTION);
                         bottomView.setVisibility(View.VISIBLE);
                         break;
                 }
@@ -299,6 +266,7 @@ public class MainActivity extends BaseActivity
 
         mChatRecyclerView = (RecyclerView) findViewById(R.id.sheet_bottom_chat);
         mBottomSheetBehaviorChat = BottomSheetBehavior.from(mChatRecyclerView);
+        mBottomSheetBehaviorChat.setState(BottomSheetBehavior.STATE_EXPANDED);
         mBottomSheetBehaviorChat.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -316,7 +284,9 @@ public class MainActivity extends BaseActivity
             }
         });
         //开始定位
+/*
         startLocation();
+*/
     }
 
     private void showLocation() {
@@ -336,7 +306,7 @@ public class MainActivity extends BaseActivity
     @Override
     public void onBackPressed() {
 
-        if (isChatting) {
+        if (mChatRecyclerView.getVisibility() == View.VISIBLE) {
             mFriendsRecyclerView.setVisibility(View.VISIBLE);
             mChatRecyclerView.setVisibility(View.GONE);
             isChatting = false;
@@ -438,7 +408,7 @@ public class MainActivity extends BaseActivity
         mMapView.onSaveInstanceState(outState);
     }
 
-    public void startLocation() {
+    /*public void startLocation() {
         //声明mLocationOption对象
         mLocationClient = new AMapLocationClient(this);
         //初始化定位参数
@@ -459,11 +429,11 @@ public class MainActivity extends BaseActivity
         mLocationClient.startLocation();
         showLocation();
         Log.e("主线程是:",Thread.currentThread().getName());
-    }
+    }*/
 
     @Override
     public void onLocationChanged(AMapLocation amapLocation) {
-        if (amapLocation != null) {
+        /*if (amapLocation != null) {
             if (amapLocation.getErrorCode() == 0) {
                 //定位成功回调信息，设置相关消息
                 amapLocation.getLocationType();//获取当前定位结果来源，如网络定位结果，详见定位类型表
@@ -482,7 +452,7 @@ public class MainActivity extends BaseActivity
                         + amapLocation.getErrorCode() + ", errInfo:"
                         + amapLocation.getErrorInfo());
             }
-        }
+        }*/
     }
 
     @Override
@@ -492,7 +462,7 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onClick(View view) {
-        bottomView.startAnimation(mDownAction);
+        bottomView.startAnimation(AnimUtil.DOWNACTION);
         bottomView.setVisibility(View.GONE);
         mBottomSheetBehaviorFriends.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
@@ -506,7 +476,7 @@ public class MainActivity extends BaseActivity
         UserInfo userInfo = (UserInfo) message.getTargetInfo();
         String targetUserName = userInfo.getUserName();
         Conversation conv = JMessageClient.getSingleConversation(targetUserName);
-        backgroundHanler.sendMessage(backgroundHanler.obtainMessage(REFRESH_CONVERSATION_LIST,conv));
+        backgroundHandler.sendMessage(backgroundHandler.obtainMessage(REFRESH_CONVERSATION_LIST,conv));
         Log.e("收到消息的线程是:",Thread.currentThread().getName());
     }
 
@@ -563,8 +533,11 @@ public class MainActivity extends BaseActivity
         }
     }
     private static final int REFRESH_CONVERSATION_LIST = 0x3000;
-    public class BackgroundHanler  extends Handler{
-        public BackgroundHanler(Looper looper){
+
+
+
+    private class BackgroundHandler  extends Handler{
+        public BackgroundHandler(Looper looper){
             super(looper);
         }
         @Override

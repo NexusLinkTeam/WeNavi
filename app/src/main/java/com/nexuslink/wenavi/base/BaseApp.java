@@ -1,8 +1,11 @@
-package com.nexuslink.wenavi;
+package com.nexuslink.wenavi.base;
 
 import android.app.Application;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.nexuslink.wenavi.DaoMaster;
+import com.nexuslink.wenavi.DaoSession;
 
 import cn.jpush.im.android.api.JMessageClient;
 

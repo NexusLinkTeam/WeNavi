@@ -3,7 +3,7 @@ package com.nexuslink.wenavi.presenter;
 import android.util.Log;
 import android.widget.EditText;
 
-import com.nexuslink.wenavi.BaseApp;
+import com.nexuslink.wenavi.base.BaseApp;
 import com.nexuslink.wenavi.callback.NetCallBack;
 import com.nexuslink.wenavi.common.Constant;
 import com.nexuslink.wenavi.contract.UserContract;

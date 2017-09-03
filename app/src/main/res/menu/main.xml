@@ -13,5 +13,10 @@
         android:icon="@drawable/search"
         android:title="@string/add_friends"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/setting"
+        android:title="@string/settings"
+        app:showAsAction="never"
+        />
 
 </menu>

@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.nexuslink.wenavi.BaseApp;
+import com.nexuslink.wenavi.base.BaseApp;
 import com.nexuslink.wenavi.DaoSession;
 import com.nexuslink.wenavi.FriendVerify;
 import com.nexuslink.wenavi.FriendVerifyDao;
@@ -53,6 +53,7 @@ public class FriendVerifyActivity extends BaseActivity implements FriendVerifyAd
     }
     private void initView(){
         ButterKnife.bind(this);
+        toolbar.setTitle(R.string.new_friends);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mAdapter = new FriendVerifyAdapter(this);
@@ -64,7 +65,7 @@ public class FriendVerifyActivity extends BaseActivity implements FriendVerifyAd
         verifyDao = daoSession.getFriendVerifyDao();
         verifies = verifyDao.queryBuilder().listLazy();
         verifyNum = verifies.size();
-        Log.e("TAG",verifyNum+"");
+        Log.e("TEST",verifyNum+"");
         for(int i=0;i<verifyNum;i++){
             uIds.add(verifies.get(i).getUserName());
             Log.e("TAG",uIds.get(i)+"");
@@ -82,6 +83,7 @@ public class FriendVerifyActivity extends BaseActivity implements FriendVerifyAd
             JMessageClient.getUserInfo(uIds.get(i), new GetUserInfoCallback() {
                 @Override
                 public void gotResult(int respondCode, String s, UserInfo userInfo) {
+                    Log.e("TAG",""+respondCode);
                     if(respondCode==0){
                         Log.e("TAG",s);
                         FriendVerify verify = verifyDao.queryBuilder().where(FriendVerifyDao.Properties.UserName.eq(userInfo.getUserName())).unique();
@@ -93,6 +95,8 @@ public class FriendVerifyActivity extends BaseActivity implements FriendVerifyAd
                         Log.e("TAG","gotResult");
                         verifyDao.update(verify);
                         Log.e("TAG","gotResult");
+                    } else {
+                        Log.e("TAG","exception");
                     }
                 }
             });

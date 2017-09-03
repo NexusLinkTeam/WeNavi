@@ -1,15 +1,14 @@
 package com.nexuslink.wenavi.ui.friend;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
-import com.nexuslink.wenavi.BaseApp;
 import com.nexuslink.wenavi.callback.OnItemClickListener;
+import com.nexuslink.wenavi.util.AnimUtil;
 import com.nexuslink.wenavi.util.SortConvList;
 
 import java.util.ArrayList;
@@ -71,8 +70,9 @@ public class FriendListController  implements OnItemClickListener {
     public void onItemClick(int pos) {
         if(pos>0){
             recyclerView.setVisibility(View.GONE);
+            chatRecyclerView.startAnimation(AnimUtil.UPACTION);
             chatRecyclerView.setVisibility(View.VISIBLE);
-            Conversation conv = mDatas.get(pos);
+            Conversation conv = mDatas.get(pos - 1);
             String tatgetId = ((UserInfo)conv.getTargetInfo()).getUserName();
             ChatListAdapter adapter = new ChatListAdapter(mContext,tatgetId);
             chatRecyclerView.setAdapter(adapter);

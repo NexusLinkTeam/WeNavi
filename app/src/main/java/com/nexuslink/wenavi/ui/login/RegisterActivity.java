@@ -18,6 +18,7 @@ import com.nexuslink.wenavi.base.BaseActivity;
 import com.nexuslink.wenavi.contract.UserContract;
 import com.nexuslink.wenavi.model.UserModel;
 import com.nexuslink.wenavi.presenter.UserPresenter;
+import com.nexuslink.wenavi.ui.main.HomeActivity;
 import com.nexuslink.wenavi.ui.main.MainActivity;
 import com.nexuslink.wenavi.util.ActivityCollector;
 
@@ -96,7 +97,7 @@ public class RegisterActivity extends BaseActivity implements UserContract.View 
     @Override
     public void showHome() {
         ActivityCollector.finishAll();
-        openActivity(MainActivity.class, null);
+        openActivity(HomeActivity.class, null);
     }
 
 

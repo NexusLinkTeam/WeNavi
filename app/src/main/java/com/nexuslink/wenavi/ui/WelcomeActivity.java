@@ -6,12 +6,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.os.Handler;
 
-import com.nexuslink.wenavi.BaseApp;
+import com.nexuslink.wenavi.base.BaseApp;
 import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseActivity;
 import com.nexuslink.wenavi.common.Constant;
 import com.nexuslink.wenavi.ui.login.LoginActivity;
-import com.nexuslink.wenavi.ui.main.MainActivity;
+import com.nexuslink.wenavi.ui.main.HomeActivity;
 import com.nexuslink.wenavi.util.SPUtil;
 
 public class WelcomeActivity extends BaseActivity {
@@ -29,7 +29,7 @@ public class WelcomeActivity extends BaseActivity {
                         .get(BaseApp.getBaseApplicationContext(), Constant.IS_LOGIN,false);
                 Class target;
                 if (isLogin) {
-                    target = MainActivity.class;
+                    target = HomeActivity.class;
                 } else {
                     target = LoginActivity.class;
                 }
