@@ -15,8 +15,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -35,6 +37,7 @@ import com.nexuslink.wenavi.base.BaseActivity;
 import com.nexuslink.wenavi.callback.OnItemClickListener;
 import com.nexuslink.wenavi.contract.MainContract;
 import com.nexuslink.wenavi.model.MainModel;
+import com.nexuslink.wenavi.model.TextMessage;
 import com.nexuslink.wenavi.presenter.MainPresenter;
 import com.nexuslink.wenavi.ui.SettingsActivity;
 import com.nexuslink.wenavi.ui.friend.AddFriendActivity;
@@ -43,9 +46,7 @@ import com.nexuslink.wenavi.ui.friend.FriendListAdapter;
 import com.nexuslink.wenavi.ui.friend.FriendVerifyActivity;
 import com.nexuslink.wenavi.util.AnimUtil;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -58,7 +59,7 @@ import cn.jpush.im.android.api.event.MessageEvent;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.UserInfo;
 
-public class HomeActivity extends BaseActivity implements MainContract.View, OnItemClickListener, AMapLocationListener {
+public class HomeActivity extends BaseActivity implements MainContract.View, OnItemClickListener, AMapLocationListener, View.OnClickListener {
 
     @BindView(R.id.friend_verification_num)
     TextView mFriendVerificationNum;
@@ -80,13 +81,20 @@ public class HomeActivity extends BaseActivity implements MainContract.View, OnI
     LinearLayout mEditorBar;
     @BindView(R.id.appbar)
     AppBarLayout mAppbar;
+    @BindView(R.id.edit_message)
+    EditText mMessageEdTx;
+    @OnClick(R.id.image_send)
+    void sendSimpleMessage(){
+        presenter.sendTextMessage(targetName,mMessageEdTx);
+    }
+
     @OnClick(R.id.view_bottom_friends)
     void showFriends() {
         presenter.openFriendsList();
     }
 
     @OnClick(R.id.view_bottom_chat)
-    void showChats(){
+    void showChats() {
         presenter.openChatListFromSelf();
     }
 
@@ -97,7 +105,7 @@ public class HomeActivity extends BaseActivity implements MainContract.View, OnI
     private AMapLocationClient mLocationClient;
     private UiSettings mUiSettings;
     private MyLocationStyle myLocationStyle;
-
+    private String targetName;
 
     private BottomSheetBehavior mBottomSheetBehaviorFriends;
     private BottomSheetBehavior mBottomSheetBehaviorChat;
@@ -110,6 +118,8 @@ public class HomeActivity extends BaseActivity implements MainContract.View, OnI
 
     private DaoSession daoSession = BaseApp.getDaosession();
     private FriendVerifyDao verifyDao = daoSession.getFriendVerifyDao();
+
+    private List<TextMessage> textMessages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +171,7 @@ public class HomeActivity extends BaseActivity implements MainContract.View, OnI
             mUiSettings.setZoomPosition(1);
         }
         mConversations = new ArrayList<>();
+        textMessages = new ArrayList<>();
         mFriendsRecyclerView = (RecyclerView) findViewById(R.id.sheet_bottom_friends);
         mChatRecyclerView = (RecyclerView) findViewById(R.id.sheet_bottom_chat);
         mBottomSheetBehaviorFriends = BottomSheetBehavior.from(mFriendsRecyclerView);
@@ -169,7 +180,7 @@ public class HomeActivity extends BaseActivity implements MainContract.View, OnI
         mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mChatRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mFriendListAdapter = new FriendListAdapter(this, mConversations);
-        mChatListAdapter = new ChatListAdapter(this, "");
+        mChatListAdapter = new ChatListAdapter(this,textMessages);
         mFriendsRecyclerView.setAdapter(mFriendListAdapter);
         mChatRecyclerView.setAdapter(mChatListAdapter);
         mFriendListAdapter.setOnItemClickListener(this);
@@ -209,7 +220,7 @@ public class HomeActivity extends BaseActivity implements MainContract.View, OnI
         mMapView.onResume();
         presenter.loadFriendsList();
         List<FriendVerify> list = verifyDao.queryBuilder().listLazy();
-        Log.e("TAG",""+list.size());
+        Log.e("TAG", "" + list.size());
         if (list.size() == 0) {
             mFriendVerificationNum.setVisibility(View.INVISIBLE);
         } else {
@@ -268,7 +279,7 @@ public class HomeActivity extends BaseActivity implements MainContract.View, OnI
             startActivity(new Intent(this, AddFriendActivity.class));
             return true;
         } else {
-            openActivity(SettingsActivity.class,null);
+            openActivity(SettingsActivity.class, null);
         }
 
         return super.onOptionsItemSelected(item);
@@ -284,8 +295,8 @@ public class HomeActivity extends BaseActivity implements MainContract.View, OnI
         UserInfo userInfo = (UserInfo) message.getTargetInfo();
         String targetUserName = userInfo.getUserName();
         Conversation conv = JMessageClient.getSingleConversation(targetUserName);
-        backgroundHandler.sendMessage(backgroundHandler.obtainMessage(REFRESH_CONVERSATION_LIST,conv));
-        Log.e("收到消息的线程是:",Thread.currentThread().getName());
+        backgroundHandler.sendMessage(backgroundHandler.obtainMessage(REFRESH_CONVERSATION_LIST, conv));
+        Log.e("收到消息的线程是:", Thread.currentThread().getName());
     }
 
     /**
@@ -297,15 +308,15 @@ public class HomeActivity extends BaseActivity implements MainContract.View, OnI
         Log.e("TAG", "收到事件");
         switch (event.getType()) {
             case invite_received://收到好友邀请
-                Log.e("TAG","收到好友邀请");
+                Log.e("TAG", "收到好友邀请");
                 String userName = event.getFromUsername();
-                Log.e("TAG",userName);
+                Log.e("TAG", userName);
                 final String reason = event.getReason();
                 JMessageClient.getUserInfo(userName, new GetUserInfoCallback() {
                     @Override
                     public void gotResult(int i, String s, UserInfo userInfo) {
-                        if(i==0){
-                            Log.e("TAG","成功了啊");
+                        if (i == 0) {
+                            Log.e("TAG", "成功了啊");
                             FriendVerify verify = new FriendVerify();
 //                            verify.setAvatar(userInfo.getAvatarFile().getAbsolutePath());
                             verify.setHello(reason);
@@ -313,15 +324,15 @@ public class HomeActivity extends BaseActivity implements MainContract.View, OnI
                             verify.setUserName(userInfo.getUserName());
                             verifyDao.insert(verify);
                             List<FriendVerify> list = verifyDao.queryBuilder().listLazy();
-                            Log.e("TAG",""+list.size());
-                            if(list.size()==0){
+                            Log.e("TAG", "" + list.size());
+                            if (list.size() == 0) {
                                 mFriendVerificationNum.setVisibility(View.INVISIBLE);
-                            }else {
+                            } else {
                                 mFriendVerificationNum.setVisibility(View.VISIBLE);
-                                mFriendVerificationNum.setText(list.size()+"");
+                                mFriendVerificationNum.setText(list.size() + "");
                             }
                         }
-                        Log.e("TAG","失败了");
+                        Log.e("TAG", "失败了");
 
                     }
                 });
@@ -368,7 +379,7 @@ public class HomeActivity extends BaseActivity implements MainContract.View, OnI
     @Override
     public void showEditorBar(Boolean b) {
         if (b) {
-          // TODO: 17-9-1 动画
+            // TODO: 17-9-1 动画
             mEditorBar.setVisibility(View.VISIBLE);
         } else {
             ///// TODO: 17-9-1
@@ -435,7 +446,23 @@ public class HomeActivity extends BaseActivity implements MainContract.View, OnI
     }
 
     @Override
+    public void cleanInput() {
+        mMessageEdTx.setText("");
+    }
+
+    @Override
+    public void showInfo(String exception) {
+        Toast.makeText(this, exception, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void insertNewMessage(TextMessage textMessage) {
+        mChatListAdapter.insertDataToHead(textMessage);
+    }
+
+    @Override
     public void onItemClick(int pos) {
+        targetName = mFriendListAdapter.getmDatas().get(pos - 1).getTitle();
         presenter.openChatListFromFirst();
     }
 
@@ -460,6 +487,12 @@ public class HomeActivity extends BaseActivity implements MainContract.View, OnI
         }
     }
 
+    @Override
+    public void onClick(View view) {
+
+    }
+
+
     public class BackgroundHandler extends Handler {
         public BackgroundHandler(Looper looper) {
             super(looper);
@@ -472,7 +505,7 @@ public class HomeActivity extends BaseActivity implements MainContract.View, OnI
                 case REFRESH_CONVERSATION_LIST:
                     Conversation conv = (Conversation) msg.obj;
                     mFriendListAdapter.set2Top(conv);
-                    Log.e("background处理的线程是:",Thread.currentThread().getName());
+                    Log.e("background处理的线程是:", Thread.currentThread().getName());
             }
         }
     }

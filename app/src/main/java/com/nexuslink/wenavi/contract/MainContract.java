@@ -1,12 +1,14 @@
 package com.nexuslink.wenavi.contract;
 
+import android.widget.EditText;
+
 import com.nexuslink.wenavi.base.BasePresenter;
 import com.nexuslink.wenavi.base.BaseView;
+import com.nexuslink.wenavi.model.TextMessage;
 
 import java.util.List;
 
 import cn.jpush.im.android.api.model.Conversation;
-import cn.jpush.im.android.api.model.UserInfo;
 
 /**
  * Created by aplrye on 17-8-31.
@@ -26,6 +28,8 @@ public interface MainContract {
         void openChatListFromSelf();
 
         void closeChatList();
+
+        void sendTextMessage(String targetName,EditText mMessageEdTx);
     }
 
     interface View extends BaseView<Presenter> {
@@ -53,5 +57,11 @@ public interface MainContract {
         void showDrawLine();
 
         void hideFriendsSheet();
+
+        void cleanInput();
+
+        void showInfo(String exception);
+
+        void insertNewMessage(TextMessage textMessage);
     }
 }

@@ -68,7 +68,7 @@ public class FriendListController  implements OnItemClickListener {
 
     @Override
     public void onItemClick(int pos) {
-        if(pos>0){
+        /*if(pos>0){
             recyclerView.setVisibility(View.GONE);
             chatRecyclerView.startAnimation(AnimUtil.UPACTION);
             chatRecyclerView.setVisibility(View.VISIBLE);
@@ -76,6 +76,6 @@ public class FriendListController  implements OnItemClickListener {
             String tatgetId = ((UserInfo)conv.getTargetInfo()).getUserName();
             ChatListAdapter adapter = new ChatListAdapter(mContext,tatgetId);
             chatRecyclerView.setAdapter(adapter);
-        }
+        }*/
     }
 }

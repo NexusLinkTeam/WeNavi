@@ -177,4 +177,8 @@ public class FriendListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             });
         }
     }
+
+    public List<Conversation> getmDatas() {
+        return mDatas;
+    }
 }
