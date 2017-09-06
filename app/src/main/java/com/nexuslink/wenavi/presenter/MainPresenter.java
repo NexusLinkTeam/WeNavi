@@ -1,6 +1,7 @@
 package com.nexuslink.wenavi.presenter;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.nexuslink.wenavi.callback.CallBack;
@@ -178,12 +179,16 @@ public class MainPresenter implements MainContract.Presenter, CallBack<Conversat
                 view.showInfo("发送成功");
                 break;
             case Constant.CODE_LOCATION_SEND:
+                //向对方发送位置成功，控制台打印
+                Log.d("debug", "发送当前位置...");
                 break;
             case Constant.CODE_LINE_SEND:
+                view.showInfo("发送路线成功");
                 break;
             case Constant.CODE_SURE_SEND:
                 //将当前的itemName设置给target,开放接口
-                targetName = tmpName;
+                // TODO: 17-9-6 ？？？ 应该是对方应答成功后才给Presenter的target赋值，允许调用其他消息发送
+                view.showInfo("发送请求成功");
                 break;
         }
     }
