@@ -54,12 +54,11 @@ public class MainModel implements IMainModel {
     /**
      * 此方法用于发送消息，包括发送当前位置，当前绘制路线，普通消息
      *
-     * @param targetName 发送对方的名字，此名字在进入聊天界面时获取
      * @param text       此处Text为封装为json格式的字符串
      * @param code       标志当前消息类型
      */
     @Override
-    public void sendMessageToTarget(String targetName, String text, final int code) {
+    public void sendMessageToTarget(String targetName,String text, final int code) {
         cn.jpush.im.android.api.model.Message message =
                 JMessageClient.createSingleTextMessage(targetName, "", text);//appkey为空默认设置为当前应用
         message.setOnSendCompleteCallback(new BasicCallback() {

@@ -1,5 +1,6 @@
 package com.nexuslink.wenavi.presenter;
 
+import android.content.Context;
 import android.widget.EditText;
 
 import com.nexuslink.wenavi.callback.CallBack;
@@ -8,6 +9,7 @@ import com.nexuslink.wenavi.common.Constant;
 import com.nexuslink.wenavi.contract.MainContract;
 import com.nexuslink.wenavi.model.MainModel;
 import com.nexuslink.wenavi.model.TextMessage;
+import com.nexuslink.wenavi.model.WeNaviLocation;
 import com.nexuslink.wenavi.model.WeNaviMessage;
 
 import java.util.List;
@@ -23,9 +25,11 @@ import static cn.jpush.im.android.tasks.GetUserInfoListTask.IDType.username;
  * Created by aplrye on 17-8-31.
  */
 
-public class MainPresenter implements MainContract.Presenter,CallBack<Conversation>,SimpleCallback {
-    private MainContract.View  view;
+public class MainPresenter implements MainContract.Presenter, CallBack<Conversation>, SimpleCallback {
+    private MainContract.View view;
     private MainModel model;
+    private String targetName;//获取双向定位成功时才设置此字段的值
+    private String tmpName;
 
     public MainPresenter(MainContract.View view, MainModel model) {
         this.view = view;
@@ -78,28 +82,76 @@ public class MainPresenter implements MainContract.Presenter,CallBack<Conversati
 
     /**
      * 发送文字信息
-     * @param targetName 对方名字
+     *
      * @param mMessageEdTx 编辑框
      */
 
     @Override
-    public void sendTextMessage(String targetName,EditText mMessageEdTx) {
+    public void sendTextMessage(EditText mMessageEdTx) {
         String text = mMessageEdTx.getText().toString();
-        if (Objects.equals(text, "")){
+        if (Objects.equals(text, "")) {
             view.showInfo("不能发送空消息哦");
-        }else {
+        } else {
             //需要将信息内容封装成一个WeNaviMessage，然后转化为Json
             WeNaviMessage weNaviMessage = new WeNaviMessage();
             weNaviMessage.setType(Constant.SIMPLE_MESSAGE);
             weNaviMessage.setContent(text);
             String content = weNaviMessage.toJSONObject();
-            model.sendMessageToTarget(targetName,text,Constant.CODE_MESSAGE_SEND);
-            view.insertNewMessage(new TextMessage(Constant.CONVERSATION_ME,content));
+            model.sendMessageToTarget(getTargetName(), text, Constant.CODE_MESSAGE_SEND);
+            view.insertNewMessage(new TextMessage(Constant.CONVERSATION_ME, content));
             // TODO: 17-9-4 提升体验
             //view.showSendProgress(true);显示进度
         }
     }
 
+    /**
+     * 发送位置
+     *
+     * @param longitude 经
+     * @param latitude  纬
+     */
+
+    @Override
+    public void sendLocationMessage(Double longitude, Double latitude) {
+        WeNaviMessage weNaviMessage = new WeNaviMessage();
+        weNaviMessage.setType(Constant.LOCATION_MESSAGE);
+        weNaviMessage.setLocation(new WeNaviLocation(longitude, latitude));
+        String content = weNaviMessage.toJSONObject();
+        model.sendMessageToTarget(getTargetName(), content, Constant.CODE_LOCATION_SEND);
+    }
+
+    /**
+     * 发送Line
+     *
+     * @param locations 坐标集合的数组
+     */
+
+    @Override
+    public void sendLineMessage(WeNaviLocation[] locations) {
+        WeNaviMessage weNaviMessage = new WeNaviMessage();
+        weNaviMessage.setType(Constant.DRAW_MESSAGE);
+        weNaviMessage.setLocations(locations);
+        String content = weNaviMessage.toJSONObject();
+        model.sendMessageToTarget(getTargetName(), content, Constant.CODE_LINE_SEND);
+    }
+
+    /**
+     * 发送连接信息
+     *
+     * @param itemName 选中Item的name
+     */
+
+    @Override
+    public void sendSureMessage(String itemName) {
+        tmpName = itemName;//暂存，成功设置为target，失败，等待重置
+        WeNaviMessage weNaviMessage = new WeNaviMessage();
+        weNaviMessage.setType(Constant.CONNECT_MESSAGE);
+        weNaviMessage.setConnect(true);//bool类型默认为false
+        String content = weNaviMessage.toJSONObject();
+        model.sendMessageToTarget(getTargetName(), content, Constant.CODE_SURE_SEND);
+    }
+
+    // TODO: 17-9-6 两个回调的存在意义
     @Override
     public void onSuccess(List<Conversation> beans) {
         view.showFriendsList(beans);
@@ -112,6 +164,7 @@ public class MainPresenter implements MainContract.Presenter,CallBack<Conversati
 
     /**
      * 各类发送事件成功后的回调
+     *
      * @param code 类别，通过判断code判断回调成功后处理的事务
      */
 
@@ -124,17 +177,30 @@ public class MainPresenter implements MainContract.Presenter,CallBack<Conversati
                 view.cleanInput();
                 view.showInfo("发送成功");
                 break;
+            case Constant.CODE_LOCATION_SEND:
+                break;
+            case Constant.CODE_LINE_SEND:
+                break;
+            case Constant.CODE_SURE_SEND:
+                //将当前的itemName设置给target,开放接口
+                targetName = tmpName;
+                break;
         }
     }
 
     /**
      * 各类事件失败后的回调
-     * @param code 回调出处
+     *
+     * @param code      回调出处
      * @param exception 异常原因
      */
 
     @Override
-    public void onFail(int code,String exception) {
+    public void onFail(int code, String exception) {
         view.showInfo(exception);
+    }
+
+    public String getTargetName() {
+        return targetName;
     }
 }

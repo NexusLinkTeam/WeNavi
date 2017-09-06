@@ -5,6 +5,7 @@ import android.widget.EditText;
 import com.nexuslink.wenavi.base.BasePresenter;
 import com.nexuslink.wenavi.base.BaseView;
 import com.nexuslink.wenavi.model.TextMessage;
+import com.nexuslink.wenavi.model.WeNaviLocation;
 
 import java.util.List;
 
@@ -29,7 +30,13 @@ public interface MainContract {
 
         void closeChatList();
 
-        void sendTextMessage(String targetName,EditText mMessageEdTx);
+        void sendTextMessage(EditText mMessageEdTx);
+
+        void sendLocationMessage(Double longitude, Double latitude);
+
+        void sendLineMessage(WeNaviLocation[] locations);
+
+        void sendSureMessage(String itemName);
     }
 
     interface View extends BaseView<Presenter> {

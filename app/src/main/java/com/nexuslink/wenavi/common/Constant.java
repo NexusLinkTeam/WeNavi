@@ -17,6 +17,9 @@ public class Constant {
     public static final String IS_LOGIN = "is_login";
 
     public static final int CODE_MESSAGE_SEND = 1;
+    public static final int CODE_LOCATION_SEND = 2;
+    public static final int CODE_LINE_SEND = 3;
+    public static final int CODE_SURE_SEND = 4;
 
     public static final int CONVERSATION_ME = 0;
     public static final int CONVERSATION_YOU = 1;
