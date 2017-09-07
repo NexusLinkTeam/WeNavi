@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,6 +39,8 @@ import com.nexuslink.wenavi.callback.OnItemClickListener;
 import com.nexuslink.wenavi.contract.MainContract;
 import com.nexuslink.wenavi.model.MainModel;
 import com.nexuslink.wenavi.model.TextMessage;
+import com.nexuslink.wenavi.model.WeNaviLocation;
+import com.nexuslink.wenavi.model.WeNaviMessage;
 import com.nexuslink.wenavi.presenter.MainPresenter;
 import com.nexuslink.wenavi.ui.SettingsActivity;
 import com.nexuslink.wenavi.ui.friend.AddFriendActivity;
@@ -83,29 +86,14 @@ public class HomeActivity extends BaseActivity implements MainContract.View, OnI
     AppBarLayout mAppbar;
     @BindView(R.id.edit_message)
     EditText mMessageEdTx;
-    @OnClick(R.id.image_send)
-    void sendSimpleMessage(){
-        presenter.sendTextMessage(targetName,mMessageEdTx);
-    }
-
-    @OnClick(R.id.view_bottom_friends)
-    void showFriends() {
-        presenter.openFriendsList();
-    }
-
-    @OnClick(R.id.view_bottom_chat)
-    void showChats() {
-        presenter.openChatListFromSelf();
-    }
 
     private MainContract.Presenter presenter;
-
     private AMap aMap;
     private AMapLocationClientOption mLocationOption;
     private AMapLocationClient mLocationClient;
     private UiSettings mUiSettings;
     private MyLocationStyle myLocationStyle;
-    private String targetName;
+    private String itemName;
 
     private BottomSheetBehavior mBottomSheetBehaviorFriends;
     private BottomSheetBehavior mBottomSheetBehaviorChat;
@@ -120,6 +108,44 @@ public class HomeActivity extends BaseActivity implements MainContract.View, OnI
     private FriendVerifyDao verifyDao = daoSession.getFriendVerifyDao();
 
     private List<TextMessage> textMessages;
+
+    private WeNaviLocation[] locations;
+
+
+    @OnClick(R.id.draw_line)
+    void draw() {
+        //绘制路线
+    }
+
+    @OnClick(R.id.eraser)
+    void eraser() {
+        //擦除路线
+        // TODO: 17-9-7 ??本地擦除 擦除对方????
+    }
+
+    @OnClick(R.id.send_line)
+    void sendLine(){
+        //确认发送
+        if (locations != null && locations.length != 0){
+            presenter.sendLineMessage(locations);
+        }
+    }
+
+    @OnClick(R.id.image_send)
+    void sendSimpleMessage() {
+        presenter.sendTextMessage(mMessageEdTx);
+    }
+
+    @OnClick(R.id.view_bottom_friends)
+    void showFriends() {
+        presenter.openFriendsList();
+    }
+
+    @OnClick(R.id.view_bottom_chat)
+    void showChats() {
+        presenter.openChatListFromSelf();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,7 +206,7 @@ public class HomeActivity extends BaseActivity implements MainContract.View, OnI
         mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mChatRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mFriendListAdapter = new FriendListAdapter(this, mConversations);
-        mChatListAdapter = new ChatListAdapter(this,textMessages);
+        mChatListAdapter = new ChatListAdapter(this, textMessages);
         mFriendsRecyclerView.setAdapter(mFriendListAdapter);
         mChatRecyclerView.setAdapter(mChatListAdapter);
         mFriendListAdapter.setOnItemClickListener(this);
@@ -462,8 +488,10 @@ public class HomeActivity extends BaseActivity implements MainContract.View, OnI
 
     @Override
     public void onItemClick(int pos) {
-        targetName = mFriendListAdapter.getmDatas().get(pos - 1).getTitle();
-        presenter.openChatListFromFirst();
+        itemName = mFriendListAdapter.getmDatas().get(pos - 1).getTitle();
+        //在点击时获得当前点击name,询问连接,连接成功后回调打开ChatList,返回时,取消与对方链接
+        presenter.sendSureMessage(itemName);
+        // TODO: 17-9-7 打开一个Progress,等待对方回应
     }
 
     @Override

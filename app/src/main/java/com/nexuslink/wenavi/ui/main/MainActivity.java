@@ -560,6 +560,7 @@ public class MainActivity extends BaseActivity
                     Gson gson = new Gson();
                     WeNaviMessage weNaviMessage = gson.fromJson(message, WeNaviMessage.class);
                     //判断四种消息类型，让view执行不同的操作
+                    // TODO: 17-9-7 貌似不能直接更新UI 把Handler放在主线程呢????
                     switch (weNaviMessage.getType()) {
                         case Constant.SIMPLE_MESSAGE:
                             //在ChatList中添加新内容（加载对方对话）
@@ -579,7 +580,7 @@ public class MainActivity extends BaseActivity
                             //取出数据
                             WeNaviLocation location = weNaviMessage.getLocation();
                             Double longitude = location.getLongitude();
-                            Double  latitude = location.getLatitude();
+                            Double latitude = location.getLatitude();
                             break;
                         case Constant.DRAW_MESSAGE:
                             //在地图上绘制对方的路线
@@ -587,7 +588,7 @@ public class MainActivity extends BaseActivity
                             WeNaviLocation[] locations = weNaviMessage.getLocations();
                             break;
                     }
-                    // TODO: 17-9-7 set2Top 是否调用
+                    // TODO: 17-9-7 set2Top 是否调用这个动作应该是在接受到SimpleMessage执行
                     controller.getAdapter().set2Top(conv);
                     Log.e("background处理的线程是:",Thread.currentThread().getName());
                     break;
