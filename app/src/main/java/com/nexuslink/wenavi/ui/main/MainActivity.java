@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
@@ -29,13 +30,17 @@ import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.google.gson.Gson;
 import com.nexuslink.wenavi.base.BaseApp;
 import com.nexuslink.wenavi.DaoSession;
 import com.nexuslink.wenavi.FriendVerify;
 import com.nexuslink.wenavi.FriendVerifyDao;
 import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseActivity;
+import com.nexuslink.wenavi.common.Constant;
 import com.nexuslink.wenavi.contract.MainContract;
+import com.nexuslink.wenavi.model.WeNaviLocation;
+import com.nexuslink.wenavi.model.WeNaviMessage;
 import com.nexuslink.wenavi.ui.friend.AddFriendActivity;
 import com.nexuslink.wenavi.ui.friend.FriendListController;
 import com.nexuslink.wenavi.ui.friend.FriendVerifyActivity;
@@ -544,10 +549,48 @@ public class MainActivity extends BaseActivity
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what){
+                //刷新会话列表
+                //todo 改名字
                 case REFRESH_CONVERSATION_LIST:
+                    //获得消息内容
+                    //消息内容解析成一个WeNaviMessage
                     Conversation conv = (Conversation) msg.obj;
+                    String message = conv.getLatestMessage().getContent().toString();
+                    Log.d(TAG, "handleMessage: 接受方获得的content"+message);
+                    Gson gson = new Gson();
+                    WeNaviMessage weNaviMessage = gson.fromJson(message, WeNaviMessage.class);
+                    //判断四种消息类型，让view执行不同的操作
+                    switch (weNaviMessage.getType()) {
+                        case Constant.SIMPLE_MESSAGE:
+                            //在ChatList中添加新内容（加载对方对话）
+
+                            //取出数据
+                            String content = weNaviMessage.getContent();
+                            break;
+                        case Constant.CONNECT_MESSAGE:
+                            //反馈对方，可以开始开始进行其他三种消息的调用
+
+                            //取出数据
+                            boolean b = weNaviMessage.isConnect();
+                            break;
+                        case Constant.LOCATION_MESSAGE:
+                            //在地图上标志此地点，同时向对方反馈自己的当前位置
+
+                            //取出数据
+                            WeNaviLocation location = weNaviMessage.getLocation();
+                            Double longitude = location.getLongitude();
+                            Double  latitude = location.getLatitude();
+                            break;
+                        case Constant.DRAW_MESSAGE:
+                            //在地图上绘制对方的路线
+
+                            WeNaviLocation[] locations = weNaviMessage.getLocations();
+                            break;
+                    }
+                    // TODO: 17-9-7 set2Top 是否调用
                     controller.getAdapter().set2Top(conv);
                     Log.e("background处理的线程是:",Thread.currentThread().getName());
+                    break;
             }
         }
     }
