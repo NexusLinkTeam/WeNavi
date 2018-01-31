@@ -8,7 +8,7 @@ import android.os.Bundle;
 
 import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseActivity;
-import com.nexuslink.wenavi.ui.login.LoginActivity;
+import com.nexuslink.wenavi.ui.login.AuthActivity;
 import com.nexuslink.wenavi.util.ActivityCollector;
 
 public class SettingsActivity extends PreferenceActivity {
@@ -22,7 +22,7 @@ public class SettingsActivity extends PreferenceActivity {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 ActivityCollector.finishAll();
-                Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+                Intent intent = new Intent(SettingsActivity.this, AuthActivity.class);
                 startActivity(intent);
                 finish();
                 return true;

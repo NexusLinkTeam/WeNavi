@@ -1,42 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:fitsSystemWindows="true">
-
-    <android.support.v7.widget.Toolbar
-        android:theme="@style/AppTheme.AppBarOverlay"
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="@drawable/shape_gradient"
-        android:paddingTop="24dp"
-        app:popupTheme="@style/AppTheme.PopupOverlay"/>
-
-    <ProgressBar
-        android:id="@+id/progressBar_load"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="56dp"
-        android:visibility="gone" />
-
-    <ImageView
-        android:id="@+id/bar_bottom"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/shape_gradient"
-        android:layout_width="match_parent"
-        android:layout_height="48dp" />
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.nexuslink.wenavi.ui.login.SignInFragment">
 
     <ScrollView
-        android:layout_above="@id/bar_bottom"
         android:id="@+id/scroll_login_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar">
+        android:layout_below="@id/appbar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,17 +19,16 @@
             >
 
             <TextView
-                android:textColor="@color/accent"
+                android:text="@string/app_name"
+                android:textColor="@color/colorAccent"
                 android:textSize="32sp"
                 android:layout_marginTop="36dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="24dp"
-                android:text="简约"
                 />
 
-            <!-- Account Label -->
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,11 +39,10 @@
                     android:id="@+id/editTx_account"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Account"
+                    android:hint="@string/account"
                     android:inputType="textEmailAddress" />
             </android.support.design.widget.TextInputLayout>
 
-            <!-- Password Label -->
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -83,20 +53,19 @@
                     android:id="@+id/editTx_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Password"
+                    android:hint="@string/password"
                     android:inputType="textPassword" />
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.v7.widget.AppCompatButton
-                android:textColor="@color/icons"
-                android:backgroundTint="@color/accent"
+            <Button
+                android:backgroundTint="@color/colorAccent"
                 android:id="@+id/btn_login"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:layout_marginTop="24dp"
                 android:padding="12dp"
-                android:text="Login"
+                android:text="@string/sign_in"
                 tools:targetApi="lollipop" />
 
             <TextView
@@ -105,9 +74,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:gravity="center"
-                android:text="No account yet? Create one"
-                android:textSize="16dip" />
-
+                android:text="@string/create_new_account"
+                android:textSize="16sp" />
         </LinearLayout>
     </ScrollView>
-</RelativeLayout>
+
+</FrameLayout>

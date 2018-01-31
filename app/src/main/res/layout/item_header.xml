@@ -12,7 +12,6 @@
         android:id="@+id/friend_text"
         android:textSize="22sp"
         android:textStyle="bold"
-        android:textColor="@color/secondary_text"
         android:text="Friends"
         android:layout_centerVertical="true"
         android:layout_width="wrap_content"

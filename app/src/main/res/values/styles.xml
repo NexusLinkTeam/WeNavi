@@ -1,22 +1,61 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="colorAccent">@color/accent</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--<item name="AppBg">@color/colorWhite</item>-->
     </style>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <style name="AppTheme.Default">
+        <item name="colorPrimary">@color/colorPrimary_Default</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_Default</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="AppbarBackgroundColor">@color/colorPrimary_Default</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-    <style name="WelcomeStyle" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowNoTitle">true</item>
+    <style name="AppTheme.Red">
+        <item name="colorPrimary">@color/colorPrimary_Red</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_Red</item>
     </style>
+
+    <style name="AppTheme.Yellow">
+        <item name="colorPrimary">@color/colorPrimary_Yellow</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_Yellow</item>
+    </style>
+
+    <style name="AppTheme.Green">
+        <item name="colorPrimary">@color/colorPrimary_Green</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_Green</item>
+    </style>
+
+    <style name="AppTheme.Pink">
+        <item name="colorPrimary">@color/colorPrimary_Pink</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_Pink</item>
+    </style>
+
+    <style name="AppTheme.Purple">
+        <item name="colorPrimary">@color/colorPrimary_Purple</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_Purple</item>
+    </style>
+
+    <style name="AppTheme.Dark">
+        <item name="colorPrimary">@color/colorPrimary_Dark</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_Dark</item>
+        <!--<item name="AppBg">@color/colorPrimaryDark_Dark</item>-->
+    </style>
+
+    <style name="AppTheme.Default.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.Default.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!--<style name="AppTheme.NoActionBar">-->
+    <!--<item name="windowActionBar">false</item>-->
+    <!--<item name="windowNoTitle">true</item>-->
+    <!--</style>-->
+
+    <!--<style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />-->
+
+    <!--<style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />-->
+    <!--<style name="WelcomeStyle" parent="Theme.AppCompat.Light.NoActionBar">-->
+    <!--<item name="android:windowNoTitle">true</item>-->
+    <!--</style>-->
 </resources>

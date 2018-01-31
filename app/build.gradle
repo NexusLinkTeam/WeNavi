@@ -3,26 +3,24 @@ apply plugin: 'com.antfortune.freeline'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    buildToolsVersion "26.0.2"
     defaultConfig {
         renderscriptSupportModeEnabled true
         renderscriptTargetApi 24
         applicationId "com.nexuslink.wenavi"
         minSdkVersion 19
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         applicationId "com.nexuslink.wenavi"
         ndk {
-            //ѡ��Ҫ��ӵĶ�Ӧcpu���͵�.so�⡣
             abiFilters 'armeabi', 'armeabi-v7a', 'armeabi-v8a'
-            // ��������� 'x86', 'x86_64', 'mips', 'mips64'
         }
         manifestPlaceholders = [
                 JPUSH_PKGNAME: applicationId,
-                JPUSH_APPKEY : "31b2964462b4db5e14442b9f", //JPush��ע��İ�����Ӧ��appkey.
-                JPUSH_CHANNEL: "developer-default", //��ʱ��дĬ��ֵ����.
+                JPUSH_APPKEY : "31b2964462b4db5e14442b9f",
+                JPUSH_CHANNEL: "developer-default",
         ]
     }
     buildTypes {
@@ -39,7 +37,7 @@ android {
 }
 repositories {
     flatDir {
-        dirs 'libs' //就是你放aar的目录地址
+        dirs 'libs'
     }
 }
 dependencies {
@@ -49,10 +47,10 @@ dependencies {
     })
     compile files('libs/Android_Map3D_SDK_V5.2.1_20170725.jar')
     compile files('libs/AMap_Location_V3.5.0_20170731.jar')
-    compile 'com.android.support:appcompat-v7:26.+'
-    compile 'com.android.support:design:26.0.0-alpha1'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:design:26.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:support-v4:26.+'
+    compile 'com.android.support:support-v4:26.1.0'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.jakewharton:butterknife:8.8.1'
     compile 'cn.jiguang.sdk:jmessage:2.2.0'

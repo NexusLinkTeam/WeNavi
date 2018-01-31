@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.nexuslink.wenavi.ui.weight.CircleCheckView
+        android:id="@+id/circle_checked_view"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_margin="8dp"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0"
+        />
+
+    <TextView
+        android:id="@+id/theme_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:textSize="14sp"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        />
+
+    <com.nexuslink.wenavi.ui.weight.RectButton
+        android:id="@+id/rect_button"
+        android:layout_width="74dp"
+        android:layout_height="36dp"
+        android:textColor="@color/colorGray"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0"
+        />
+
+</LinearLayout>

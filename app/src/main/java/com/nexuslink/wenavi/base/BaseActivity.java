@@ -2,16 +2,14 @@ package com.nexuslink.wenavi.base;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.nexuslink.wenavi.util.ActivityCollector;
+import com.nexuslink.wenavi.util.ThemeManager;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -21,15 +19,29 @@ import java.lang.reflect.InvocationTargetException;
 
 public class BaseActivity extends AppCompatActivity {
 
+    private int themeId;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //透明状态栏
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+//        //透明状态栏
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+//        }
+        themeId = ThemeManager.getSavedThemeId(this);
+        if (themeId != 0) {
+            setTheme(themeId);
         }
         ActivityCollector.add(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (themeId != ThemeManager.getSavedThemeId(this)) {
+            recreate();
+        }
     }
 
     //某些国产手机下面没有导航栏

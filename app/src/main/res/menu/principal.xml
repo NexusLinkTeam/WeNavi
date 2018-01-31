@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/map"
+        android:icon="@drawable/friend_verify_logo"
+        android:title="@string/map"
+        />
+    <item
+        android:id="@+id/friends"
+        android:icon="@drawable/search"
+        android:title="@string/friends"
+        />
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/search"
+        android:title="@string/profile"
+        />
+</menu>

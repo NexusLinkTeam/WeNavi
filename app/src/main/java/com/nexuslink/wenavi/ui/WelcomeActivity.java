@@ -10,8 +10,8 @@ import com.nexuslink.wenavi.base.BaseApp;
 import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseActivity;
 import com.nexuslink.wenavi.common.Constant;
-import com.nexuslink.wenavi.ui.login.LoginActivity;
-import com.nexuslink.wenavi.ui.main.HomeActivity;
+import com.nexuslink.wenavi.ui.login.AuthActivity;
+import com.nexuslink.wenavi.ui.main.PrincipalActivity;
 import com.nexuslink.wenavi.util.SPUtil;
 
 public class WelcomeActivity extends BaseActivity {
@@ -20,7 +20,7 @@ public class WelcomeActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-        initView();
+//        initView();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -29,9 +29,9 @@ public class WelcomeActivity extends BaseActivity {
                         .get(BaseApp.getBaseApplicationContext(), Constant.IS_LOGIN,false);
                 Class target;
                 if (isLogin) {
-                    target = HomeActivity.class;
+                    target = PrincipalActivity.class;
                 } else {
-                    target = LoginActivity.class;
+                    target = AuthActivity.class;
                 }
                 Intent intent = new Intent(WelcomeActivity.this,target);
                 startActivity(intent);
@@ -40,16 +40,16 @@ public class WelcomeActivity extends BaseActivity {
         },500);
     }
 
-    private void initView() {
-        try {
-            ImageView bottomBar = (ImageView) findViewById(R.id.bar_bottom);
-            if (isBottomNaviBarExist(this)) {
-                bottomBar.setVisibility(View.VISIBLE);
-            } else {
-                bottomBar.setVisibility(View.GONE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    private void initView() {
+//        try {
+//            ImageView bottomBar = (ImageView) findViewById(R.id.bar_bottom);
+//            if (isBottomNaviBarExist(this)) {
+//                bottomBar.setVisibility(View.VISIBLE);
+//            } else {
+//                bottomBar.setVisibility(View.GONE);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
