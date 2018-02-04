@@ -1,6 +1,8 @@
 package com.nexuslink.wenavi.ui.setting;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -11,8 +13,10 @@ import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseActivity;
 import com.nexuslink.wenavi.base.BaseApp;
 import com.nexuslink.wenavi.common.Constant;
+import com.nexuslink.wenavi.ui.WelcomeActivity;
 import com.nexuslink.wenavi.ui.adapter.ChangerAdapter;
 import com.nexuslink.wenavi.ui.decoration.SimpleDecoration;
+import com.nexuslink.wenavi.util.ActivityCollector;
 import com.nexuslink.wenavi.util.SPUtil;
 import com.nexuslink.wenavi.util.ThemeManager;
 
@@ -66,6 +70,24 @@ public class ThemeChangeActivity extends BaseActivity implements ChangerAdapter.
 //        SharedPreferences sharedPreferences = getSharedPreferences("ThemeChanger",MODE_PRIVATE);
 //        sharedPreferences.edit().putInt("theme",themeId).putInt("position",pos).apply();
 //        adapter.notify(pos);
-        recreate();
+
+//        recreate();
+        new AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setMessage("切换主题需要重启应用，确认重启？")
+                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCollector.finishAll();
+                        openActivity(WelcomeActivity.class, null);
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 }

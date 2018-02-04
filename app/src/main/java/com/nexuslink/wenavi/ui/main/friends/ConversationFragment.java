@@ -89,6 +89,7 @@ public class ConversationFragment extends Fragment {
      *  初始化
      */
     private void initView() {
+        Log.d("ConversationFragment", "initView: 会话fragment创建");
         List<ConversationItem> conversationItemList = mListener.getConversationItemList();
         if (conversationItemList.size() == 0) {
             mListener.replaceEmptyFragment();

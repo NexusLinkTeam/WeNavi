@@ -24,7 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public class BaseActivity extends AppCompatActivity implements BaseView{
 
-//    private int themeId;
+    private int themeId;
 
     private ProgressDialog progressDialog;
 
@@ -37,10 +37,10 @@ public class BaseActivity extends AppCompatActivity implements BaseView{
 //            getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 //        }
 
-//        themeId = ThemeManager.getSavedThemeId(this);
-//        if (themeId != 0) {
-//            setTheme(themeId);
-//        }
+        themeId = ThemeManager.getSavedThemeId(this);
+        if (themeId != 0) {
+            setTheme(themeId);
+        }
         ActivityCollector.add(this);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.loading));

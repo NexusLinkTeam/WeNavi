@@ -22,16 +22,16 @@
 
     <color name="colorPrimary_Default">#2196F3</color>
     <color name="colorPrimary_Red">#F44336</color>
-    <color name="colorPrimary_Yellow">#FFC107</color>
-    <color name="colorPrimary_Green">#8BC34A</color>
-    <color name="colorPrimary_Pink">#FB7299</color>
-    <color name="colorPrimary_Purple">#9C27B0</color>
+    <color name="colorPrimary_Yellow">#3F51B5</color>
+    <color name="colorPrimary_Green">#009688</color>
+    <color name="colorPrimary_Pink">#E91E63</color>
+    <color name="colorPrimary_Purple">#673AB7</color>
 
     <!--根据文档修改dark-->
     <color name="colorPrimaryDark_Default">#1976D2</color>
-    <color name="colorPrimaryDark_Yellow">#625221</color>
-    <color name="colorPrimaryDark_Pink">#28475F</color>
-    <color name="colorPrimaryDark_Red">#5F312D</color>
-    <color name="colorPrimaryDark_Green">#53752C</color>
-    <color name="colorPrimaryDark_Purple">#48294E</color>
+    <color name="colorPrimaryDark_Yellow">#303F9F</color>
+    <color name="colorPrimaryDark_Pink">#C2185B</color>
+    <color name="colorPrimaryDark_Red">#D32F2F</color>
+    <color name="colorPrimaryDark_Green">#00796B</color>
+    <color name="colorPrimaryDark_Purple">#512DA8</color>
 </resources>

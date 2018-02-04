@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -16,12 +17,10 @@ import android.view.MenuItem;
 
 import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseActivity;
-import com.nexuslink.wenavi.base.BaseView;
 import com.nexuslink.wenavi.common.Constant;
 import com.nexuslink.wenavi.contract.PrincipalContract;
 import com.nexuslink.wenavi.model.ConversationItem;
 import com.nexuslink.wenavi.presenter.PrincipalPresenter;
-import com.nexuslink.wenavi.ui.EmptyMessageFragment;
 import com.nexuslink.wenavi.ui.main.friends.ConversationFragment;
 import com.nexuslink.wenavi.ui.main.profile.ProfileFragment;
 import com.nexuslink.wenavi.ui.verify.AddFriendActivity;
@@ -71,6 +70,8 @@ public class PrincipalActivity extends BaseActivity
 
     private PrincipalContract.Presenter presenter;
 
+    private Fragment currentFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,13 +103,16 @@ public class PrincipalActivity extends BaseActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.map:
-                replace(mapFragment);
+                switchFragment(currentFragment, mapFragment);
+                currentFragment = mapFragment;
                 return true;
             case R.id.friends:
-                replace(conversationFragment);
+                switchFragment(currentFragment, conversationFragment);
+                currentFragment = conversationFragment;
                 return true;
             case R.id.profile:
-                replace(profileFragment);
+                switchFragment(currentFragment, profileFragment);
+                currentFragment = profileFragment;
                 return true;
             default:
                 return false;
@@ -223,9 +227,12 @@ public class PrincipalActivity extends BaseActivity
                 .add(R.id.content, mapFragment)
                 .add(R.id.content, profileFragment)
                 .add(R.id.content, conversationFragment)
-                .replace(R.id.content, mapFragment)
+                .hide(profileFragment)
+                .hide(conversationFragment)
+                .show(mapFragment)
                 .commit();
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
+        currentFragment = mapFragment;
     }
 
     /**
@@ -242,12 +249,17 @@ public class PrincipalActivity extends BaseActivity
 
     /**
      * 切换Fragment
-     * @param fragment 待切换Fragment
+     * @param from 取代的fragment
+     * @param to 替代的fragment
      */
-    private void replace(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.content, fragment)
-                .commit();
+    private void switchFragment(Fragment from, Fragment to) {
+        if (currentFragment != to ) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            if (!to.isAdded()) {
+                transaction.hide(from).add(R.id.content, to).commit();
+            } else {
+                transaction.hide(from).show(to).commit();
+            }
+        }
     }
 }

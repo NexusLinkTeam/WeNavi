@@ -10,7 +10,6 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <!--<item name="AppbarBackgroundColor">@color/colorPrimary_Default</item>-->
-        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/colorPrimary_Default</item>
     </style>
 
     <style name="AppTheme.Red">

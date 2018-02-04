@@ -1,8 +1,10 @@
 package com.nexuslink.wenavi.ui.main.profile;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.common.Constant;
 import com.nexuslink.wenavi.model.SettingItem;
+import com.nexuslink.wenavi.ui.WelcomeActivity;
 import com.nexuslink.wenavi.ui.adapter.SettingListAdapter;
 import com.nexuslink.wenavi.ui.login.AuthActivity;
 import com.nexuslink.wenavi.ui.setting.ThemeChangeActivity;
@@ -120,10 +123,25 @@ public class ProfileFragment extends Fragment {
                         mListener.openActivityByActivity(ThemeChangeActivity.class, null);
                         break;
                     case 2:
-                        mListener.logout();
-                        ActivityCollector.finishAll();
-                        mListener.openActivityByActivity(AuthActivity.class, null);
-                        SPUtil.putAndApply(getContext(),Constant.IS_LOGIN,false);
+                        new AlertDialog.Builder(getContext())
+                                .setTitle("提示")
+                                .setMessage("确认登出吗？")
+                                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mListener.logout();
+                                        ActivityCollector.finishAll();
+                                        mListener.openActivityByActivity(AuthActivity.class, null);
+                                        SPUtil.putAndApply(getContext(),Constant.IS_LOGIN,false);
+                                    }
+                                })
+                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .show();
                         break;
                 }
             }

@@ -67,7 +67,6 @@ public class ChangerAdapter extends RecyclerView.Adapter<ChangerAdapter.ChangerV
         } else {
             holder.rectButton.setText("使用中");
             holder.circleCheckView.setChecked(true);
-            // TODO: 2018/1/31 这里有点耦合
             if (color == R.color.colorPrimary_Dark) {
                 color = R.color.colorPrimary_Default;
                 colorText = R.color.colorGray;
