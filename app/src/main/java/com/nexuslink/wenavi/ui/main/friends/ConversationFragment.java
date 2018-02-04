@@ -90,21 +90,25 @@ public class ConversationFragment extends Fragment {
      */
     private void initView() {
         List<ConversationItem> conversationItemList = mListener.getConversationItemList();
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        Log.d("Conversation", "initView: 获得conversationItem大小 " + conversationItemList.size());
-        friendListAdapter = new ConversationListAdapter(getContext(), conversationItemList);
-        recyclerView.setAdapter(friendListAdapter);
-        friendListAdapter.setOnItemClickListener(new ConversationListAdapter.FriendListViewHolder.OnItemClickListener() {
-            @Override
-            public void onItemClick(ConversationItem conversationItem) {
-                Bundle bundle = new Bundle();
-                // 获取头像，账号，昵称
-                bundle.putString(Constant.USERNAME, conversationItem.getUserName());
-                bundle.putString(Constant.NICKNAME,conversationItem.getNickName());
-                bundle.putString(Constant.AVATAR,conversationItem.getAvatar());
-                mListener.openActivityByActivity(ChatActivity.class, bundle);
-            }
-        });
+        if (conversationItemList.size() == 0) {
+            mListener.replaceEmptyFragment();
+        } else {
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            Log.d("Conversation", "initView: 获得conversationItem大小 " + conversationItemList.size());
+            friendListAdapter = new ConversationListAdapter(getContext(), conversationItemList);
+            recyclerView.setAdapter(friendListAdapter);
+            friendListAdapter.setOnItemClickListener(new ConversationListAdapter.FriendListViewHolder.OnItemClickListener() {
+                @Override
+                public void onItemClick(ConversationItem conversationItem) {
+                    Bundle bundle = new Bundle();
+                    // 获取头像，账号，昵称
+                    bundle.putString(Constant.USERNAME, conversationItem.getUserName());
+                    bundle.putString(Constant.NICKNAME,conversationItem.getNickName());
+                    bundle.putString(Constant.AVATAR,conversationItem.getAvatar());
+                    mListener.openActivityByActivity(ChatActivity.class, bundle);
+                }
+            });
+        }
     }
 
     /**
@@ -116,5 +120,7 @@ public class ConversationFragment extends Fragment {
 
     public interface OnFragmentInteractionListener extends BaseOnFragmentInteractionListener {
         List<ConversationItem> getConversationItemList();
+
+        void replaceEmptyFragment();
     }
 }

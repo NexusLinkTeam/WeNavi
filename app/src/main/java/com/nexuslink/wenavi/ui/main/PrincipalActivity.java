@@ -21,6 +21,7 @@ import com.nexuslink.wenavi.common.Constant;
 import com.nexuslink.wenavi.contract.PrincipalContract;
 import com.nexuslink.wenavi.model.ConversationItem;
 import com.nexuslink.wenavi.presenter.PrincipalPresenter;
+import com.nexuslink.wenavi.ui.EmptyMessageFragment;
 import com.nexuslink.wenavi.ui.main.friends.ConversationFragment;
 import com.nexuslink.wenavi.ui.main.profile.ProfileFragment;
 import com.nexuslink.wenavi.ui.verify.AddFriendActivity;
@@ -161,6 +162,11 @@ public class PrincipalActivity extends BaseActivity
     @Override
     public List<ConversationItem> getConversationItemList() {
         return presenter.getConversationItemList();
+    }
+
+    @Override
+    public void replaceEmptyFragment() {
+        showEmpty(R.id.content);
     }
 
     @Override

@@ -7,15 +7,15 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <!--android:theme="@style/AppTheme.AppBarOverlay"-->
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.Default.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
+    <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/AppTheme.Default.PopupOverlay"
             >
-            <!--app:popupTheme="@style/AppTheme.PopupOverlay">-->
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
     <LinearLayout
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
-            android:src="@drawable/search"/>
+            android:src="@drawable/ic_search_black_24dp"/>
 
         <EditText
             android:id="@+id/et_searchUser"

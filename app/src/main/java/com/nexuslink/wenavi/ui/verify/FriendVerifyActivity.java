@@ -69,6 +69,9 @@ public class FriendVerifyActivity extends BaseActivity implements FriendVerifyAd
         verifyDao = daoSession.getFriendVerifyDao();
         verifies = verifyDao.queryBuilder().listLazy();
         verifyNum = verifies.size();
+        if (verifyNum == 0) {
+            showEmpty(R.id.content);
+        }
         Log.e("TEST",verifyNum+"");
         for(int i=0;i<verifyNum;i++){
             uIds.add(verifies.get(i).getUserName());

@@ -36,4 +36,10 @@ public interface BaseView {
      *  finish Activity
      */
     void finishActivity();
+
+    /**
+     * 加载没有数据页面
+     * @param contentId 容器id
+     */
+    void showEmpty(int contentId);
 }

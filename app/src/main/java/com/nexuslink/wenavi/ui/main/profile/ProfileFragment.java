@@ -45,9 +45,9 @@ public class ProfileFragment extends Fragment {
     CircleImageView avatar;
 
     private List<SettingItem> settingItems = Arrays.asList(
-            new SettingItem(R.mipmap.ic_launcher, "个人资料"),
-            new SettingItem(R.mipmap.ic_launcher, "主题切换"),
-            new SettingItem(R.mipmap.ic_launcher, "退出登录"));
+            new SettingItem(R.drawable.ic_person_black_24dp, "个人资料"),
+            new SettingItem(R.drawable.ic_color_lens_black_24dp, "主题切换"),
+            new SettingItem(R.drawable.ic_exit_to_app_black_24dp, "退出登录"));
 
     private static final String ARG_PARAM1 = "param1";
 

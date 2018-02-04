@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.nexuslink.wenavi.R;
+import com.nexuslink.wenavi.ui.EmptyMessageFragment;
 import com.nexuslink.wenavi.util.ActivityCollector;
 import com.nexuslink.wenavi.util.SPUtil;
 import com.nexuslink.wenavi.util.ThemeManager;
@@ -104,4 +105,14 @@ public class BaseActivity extends AppCompatActivity implements BaseView{
     public void finishActivity() {
         finish();
     }
+
+    @Override
+    public void showEmpty(int contentId) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(contentId, EmptyMessageFragment.newInstance("",""))
+                .commit();
+    }
+
+
 }

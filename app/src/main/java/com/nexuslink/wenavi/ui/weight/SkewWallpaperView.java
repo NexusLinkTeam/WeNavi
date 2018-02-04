@@ -37,7 +37,7 @@ public class SkewWallpaperView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         paint = new Paint();
-        paint.setColor(Color.parseColor("#938ffe"));
+        paint.setColor(Color.parseColor("#82B1FF"));
         Path path = new Path();
         path.moveTo(0, getHeight());
         path.lineTo(getWidth(), (float) (getHeight() * RATE));
