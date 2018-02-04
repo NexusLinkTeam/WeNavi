@@ -20,7 +20,8 @@ import butterknife.OnClick;
  * 登录Fragment
  * @author 18064
  */
-public class SignInFragment extends Fragment {
+public class
+SignInFragment extends Fragment {
 
     @BindView(R.id.editTx_account)
     EditText accountEditTx;

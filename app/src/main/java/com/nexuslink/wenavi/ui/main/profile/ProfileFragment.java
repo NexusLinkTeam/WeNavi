@@ -1,7 +1,6 @@
 package com.nexuslink.wenavi.ui.main.profile;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -46,9 +45,9 @@ public class ProfileFragment extends Fragment {
     CircleImageView avatar;
 
     private List<SettingItem> settingItems = Arrays.asList(
-            new SettingItem(R.drawable.icon, "个人资料"),
-            new SettingItem(R.drawable.icon, "主题切换"),
-            new SettingItem(R.drawable.icon, "退出登录"));
+            new SettingItem(R.mipmap.ic_launcher, "个人资料"),
+            new SettingItem(R.mipmap.ic_launcher, "主题切换"),
+            new SettingItem(R.mipmap.ic_launcher, "退出登录"));
 
     private static final String ARG_PARAM1 = "param1";
 
@@ -115,7 +114,7 @@ public class ProfileFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        mListener.openActivityByActivity(PersonalFragment.class,null);
+                        mListener.openActivityByActivity(PersonalActivity.class,null);
                         break;
                     case 1:
                         mListener.openActivityByActivity(ThemeChangeActivity.class, null);

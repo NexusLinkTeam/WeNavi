@@ -56,6 +56,7 @@ public class AuthPresenter implements AuthContract.Presenter, ServerResultCallba
                 Log.d("LOGIN", "onSuccess: 回调成功");
                 SPUtil.putAndApply(BaseApp.getBaseApplicationContext(), Constant.IS_LOGIN, true);
                 view.openActivity(PrincipalActivity.class, null);
+                view.finishActivity();
                 view.showProgress(false);
                 view.shortToast(R.id.login_success);
                 break;

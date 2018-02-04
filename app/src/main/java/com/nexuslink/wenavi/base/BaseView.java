@@ -31,4 +31,9 @@ public interface BaseView {
      * @param bundle 额外数据
      */
     void openActivity(Class<?> activityClass, Bundle bundle);
+
+    /**
+     *  finish Activity
+     */
+    void finishActivity();
 }

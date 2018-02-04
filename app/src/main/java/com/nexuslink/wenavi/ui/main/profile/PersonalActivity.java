@@ -8,7 +8,7 @@ import com.nexuslink.wenavi.base.BaseActivity;
 /**
  *  修改个人资料
  */
-public class PersonalFragment extends BaseActivity{
+public class PersonalActivity extends BaseActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

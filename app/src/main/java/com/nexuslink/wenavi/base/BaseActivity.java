@@ -99,4 +99,9 @@ public class BaseActivity extends AppCompatActivity implements BaseView{
         }
         startActivity(intent);
     }
+
+    @Override
+    public void finishActivity() {
+        finish();
+    }
 }

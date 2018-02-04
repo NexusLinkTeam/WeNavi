@@ -145,20 +145,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.main.HomeActivity" />
         <activity android:name=".ui.SettingsActivity" />
-        <activity android:name=".ui.login.AuthActivity" />
         <activity
-            android:name=".ui.main.PrincipalActivity"
-            android:label="@string/title_activity_principal"
-            android:theme="@style/AppTheme.Default" />
+            android:name=".ui.login.AuthActivity" />
+        <activity
+            android:name=".ui.main.PrincipalActivity"/>
         <activity
             android:name=".ui.setting.ThemeChangeActivity"
-            android:label="@string/title_activity_theme_change"
-            android:theme="@style/AppTheme.Default" />
+            />
         <activity android:name=".ui.main.friends.ChatActivity" />
         <activity android:name=".ui.verify.FriendVerifyActivity" />
-        <activity android:name=".ui.main.profile.PersonalFragment"></activity>
+        <activity android:name=".ui.main.profile.PersonalActivity"/>
     </application>
 
 </manifest>

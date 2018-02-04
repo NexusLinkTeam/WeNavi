@@ -3,13 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/WeNavi.iml" filepath="$PROJECT_DIR$/WeNavi.iml" />
-      <module fileurl="file://C:\Users\18064\Desktop\WeNavi\WeNavi.iml" filepath="C:\Users\18064\Desktop\WeNavi\WeNavi.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-<<<<<<< HEAD
-      <module fileurl="file://C:\Users\18064\Desktop\WeNavi\app\app.iml" filepath="C:\Users\18064\Desktop\WeNavi\app\app.iml" />
-=======
       <module fileurl="file://$PROJECT_DIR$/lib/lib.iml" filepath="$PROJECT_DIR$/lib/lib.iml" />
->>>>>>> develop
     </modules>
   </component>
 </project>
