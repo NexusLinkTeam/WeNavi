@@ -6,29 +6,101 @@
     android:layout_height="match_parent">
 
     <com.amap.api.maps.MapView
-        android:layout_marginBottom="80dp"
         android:id="@+id/view_map"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <android.support.v7.widget.RecyclerView
-        android:background="#00000000"
-        app:layout_behavior="@string/bottom_sheet_behavior"
-        app:behavior_peekHeight="180dp"
-        app:behavior_hideable="false"
-        android:id="@+id/sheet_bottom_friends"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </android.support.v7.widget.RecyclerView>
+    <Button
+        android:text="绘制"
+        android:layout_marginTop="80dp"
+        android:id="@+id/draw_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:text="擦除"
+        android:layout_marginTop="140dp"
+        android:id="@+id/eraser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <Button
+        android:text="发送"
+        android:layout_marginTop="200dp"
+        android:id="@+id/send_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <android.support.v7.widget.RecyclerView
-        android:visibility="gone"
-        android:background="#00000000"
-        app:layout_behavior="@string/bottom_sheet_behavior"
-        app:behavior_peekHeight="180dp"
+        android:id="@+id/sheet_bottom_friends"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
         app:behavior_hideable="false"
+        app:behavior_peekHeight="0dp"
+        app:layout_behavior="@string/bottom_sheet_behavior"/>
+
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/sheet_bottom_chat"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="0dp"
+        app:layout_behavior="@string/bottom_sheet_behavior"/>
+
+    <LinearLayout
+        android:id="@+id/view_bottom_friends"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/t1"
+            app:civ_border_color="@color/colorPrimary_Default"
+            app:civ_border_width="2dp" />
+
+        <TextView
+            android:id="@+id/text_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_weight="1"
+            android:text="Unknown Position"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tx_conver"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0"
+            android:text="会话列表"
+            android:textColor="@color/colorPrimary_Default" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/view_bottom_chat"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:layout_gravity="center_vertical"
+            android:text="回到聊天"
+            android:textColor="@color/colorPrimary_Default" />
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

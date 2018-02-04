@@ -1,12 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#8434da</color>
-    <color name="primary_dark">#7B1FA2</color>
-    <color name="primary_light">#E1BEE7</color>
-    <color name="accent">#6579f6</color>
-    <color name="primary_text">#212121</color>
-    <color name="secondary_text">#757575</color>
-    <color name="icons">#FFFFFF</color>
-    <color name="divider">#BDBDBD</color>
-    <color name="half_transparent">#33ffffff</color>
+    <!--<color name="primary">#8434da</color>-->
+    <!--<color name="primary_dark">#7B1FA2</color>-->
+    <!--<color name="primary_light">#E1BEE7</color>-->
+    <!--<color name="accent">#6579f6</color>-->
+    <!--<color name="primary_text">#212121</color>-->
+    <!--<color name="secondary_text">#757575</color>-->
+    <!--<color name="icons">#FFFFFF</color>-->
+    <!--<color name="divider">#BDBDBD</color>-->
+    <!--<color name="gray">#BDBDBD</color>-->
+    <!--<color name="half_transparent">#33ffffff</color>-->
+
+    <!--主题色彩-->
+    <color name="colorGray">#999999</color>
+    <color name="colorDecoration">#324b4b4b</color>
+    <color name="colorAccent">#2196F3</color>
+
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorPrimary_Dark">#3B3B3B</color>
+    <color name="colorPrimaryDark_Dark">#2B2B2B</color>
+
+    <color name="colorPrimary_Default">#2196F3</color>
+    <color name="colorPrimary_Red">#F44336</color>
+    <color name="colorPrimary_Yellow">#FFC107</color>
+    <color name="colorPrimary_Green">#8BC34A</color>
+    <color name="colorPrimary_Pink">#FB7299</color>
+    <color name="colorPrimary_Purple">#9C27B0</color>
+
+    <!--根据文档修改dark-->
+    <color name="colorPrimaryDark_Default">#1976D2</color>
+    <color name="colorPrimaryDark_Yellow">#625221</color>
+    <color name="colorPrimaryDark_Pink">#28475F</color>
+    <color name="colorPrimaryDark_Red">#5F312D</color>
+    <color name="colorPrimaryDark_Green">#53752C</color>
+    <color name="colorPrimaryDark_Purple">#48294E</color>
 </resources>

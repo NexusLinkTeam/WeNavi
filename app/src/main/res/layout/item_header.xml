@@ -9,12 +9,14 @@
         android:layout_marginStart="16dp"
         android:layout_marginBottom="8dp"
         android:layout_alignParentBottom="true"
+        android:id="@+id/friend_text"
         android:textSize="22sp"
         android:textStyle="bold"
-        android:textColor="@color/secondary_text"
         android:text="Friends"
+        android:layout_centerVertical="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
     <ImageView
         android:layout_marginBottom="14dp"
         android:layout_alignParentBottom="true"
