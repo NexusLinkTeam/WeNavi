@@ -16,6 +16,8 @@ import android.view.View;
 
 public class SkewWallpaperView extends View {
 
+    private static final float RATE = 0.6f;
+
     private Paint paint;
 
     public SkewWallpaperView(Context context) {
@@ -38,7 +40,7 @@ public class SkewWallpaperView extends View {
         paint.setColor(Color.parseColor("#938ffe"));
         Path path = new Path();
         path.moveTo(0, getHeight());
-        path.lineTo(getWidth(), (float) (getHeight() * 2.0 / 3));
+        path.lineTo(getWidth(), (float) (getHeight() * RATE));
         path.lineTo(getWidth(),0);
         path.lineTo(0,0);
         path.close();

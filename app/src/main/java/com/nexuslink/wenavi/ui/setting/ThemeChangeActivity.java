@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 
 import com.nexuslink.wenavi.R;
@@ -26,7 +27,6 @@ public class ThemeChangeActivity extends BaseActivity implements ChangerAdapter.
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-
     @BindView(R.id.recycler_view_home)
     RecyclerView mRecyclerView;
 
@@ -37,18 +37,27 @@ public class ThemeChangeActivity extends BaseActivity implements ChangerAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_theme_change);
         ButterKnife.bind(this);
-
         initView();
     }
 
     private void initView() {
         toolbar.setTitle(R.string.theme);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         adapter = new ChangerAdapter(this, ThemeManager.themes);
         adapter.setOnItemClickListener(this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.addItemDecoration(new SimpleDecoration(this));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

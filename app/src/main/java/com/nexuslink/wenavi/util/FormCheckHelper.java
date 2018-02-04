@@ -7,7 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 /**
- *  表单check邦之类
+ *  表单填写帮助类
  * Created by 18064 on 2018/1/30.
  */
 

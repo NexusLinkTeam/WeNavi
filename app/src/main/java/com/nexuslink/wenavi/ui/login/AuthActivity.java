@@ -1,9 +1,7 @@
 package com.nexuslink.wenavi.ui.login;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
 
 import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseActivity;
@@ -13,22 +11,34 @@ import com.nexuslink.wenavi.presenter.AuthPresenter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AuthActivity extends BaseActivity implements SignInFragment.OnFragmentInteractionListener, SignUpFragment.OnFragmentInteractionListener, AuthContract.View {
+/**
+ * 授权页面
+ * @author 18064
+ */
+public class AuthActivity extends BaseActivity
+        implements SignInFragment.OnFragmentInteractionListener,
+        SignUpFragment.OnFragmentInteractionListener,
+        AuthContract.View {
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    /**
+     *  登录Fragment
+     */
     private SignInFragment signInFragment;
 
+    /**
+     *  注册Fragment
+     */
     private SignUpFragment signUpFragment;
 
-    private AuthPresenter presenter;
     /**
      *  标记当前fragment
      */
     private int currentFragmentIndex = 0;
 
-    private ProgressDialog progressDialog;
-
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    private AuthPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +49,18 @@ public class AuthActivity extends BaseActivity implements SignInFragment.OnFragm
         initView();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (currentFragmentIndex == 1) {
+            backToSignIn();
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    /**
+     * 初始化
+     */
     private void initView() {
         updateToolbar(R.string.sign_in);
         signInFragment = SignInFragment.newInstance("","");
@@ -46,20 +68,19 @@ public class AuthActivity extends BaseActivity implements SignInFragment.OnFragm
                 .add(R.id.content,signInFragment)
                 .replace(R.id.content, signInFragment)
                 .commit();
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage(getString(R.string.sign_in));
-        progressDialog.setMessage(getString(R.string.loading));
+    }
+
+    /**
+     * 更新toolbar
+     * @param title 标题
+     */
+    private void updateToolbar(int title) {
+        toolbar.setTitle(title);
     }
 
     @Override
-    public void backSignIn() {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .remove(signUpFragment)
-                .replace(R.id.content, signInFragment)
-                .commit();
-        currentFragmentIndex = 0;
-        updateToolbar(R.string.sign_in);
+    public void login(String account, String pass) {
+        presenter.login(account,pass);
     }
 
     @Override
@@ -80,50 +101,14 @@ public class AuthActivity extends BaseActivity implements SignInFragment.OnFragm
     }
 
     @Override
-    public void login(String account, String pass) {
-        presenter.login(account,pass);
-    }
-
-    /**
-     * 更新toolbar
-     * @param title 标题
-     */
-    private void updateToolbar(int title) {
-        toolbar.setTitle(title);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (currentFragmentIndex == 1) {
-            backSignIn();
-            return;
-        }
-        super.onBackPressed();
-    }
-
-    @Override
-    public void showProgress(boolean b) {
-        if (b) {
-            progressDialog.show();
-        } else {
-            progressDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void showToast(int result) {
-        Toast.makeText(this, getString(result), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void showToast(String result) {
-        Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void openActivity(Class<?> activityClass) {
-        openActivity(activityClass, null);
-        finish();
+    public void backToSignIn() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .remove(signUpFragment)
+                .replace(R.id.content, signInFragment)
+                .commit();
+        currentFragmentIndex = 0;
+        updateToolbar(R.string.sign_in);
     }
 
     @Override

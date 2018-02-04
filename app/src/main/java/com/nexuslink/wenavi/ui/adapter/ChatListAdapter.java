@@ -1,27 +1,25 @@
-package com.nexuslink.wenavi.ui.friend;
+package com.nexuslink.wenavi.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.common.Constant;
+import com.nexuslink.wenavi.model.ChatItem;
 import com.nexuslink.wenavi.model.TextMessage;
-import com.nexuslink.wenavi.model.WeNaviMessage;
-import com.nexuslink.wenavi.ui.main.HeaderViewHolder;
+import com.nexuslink.wenavi.util.SPUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.jpush.im.android.api.enums.MessageDirect;
-import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 
 /**
@@ -33,11 +31,11 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
     public static final int TYPE_HEADER = 0;
     public static final int TYPE_BODY = 1;
     private Context mContext;
-    private List<TextMessage> messages;
+    private List<ChatItem> chatItems = new ArrayList<>();
 
-    public ChatListAdapter(Context context,List<TextMessage> messageContents) {
+    public ChatListAdapter(Context context, List<ChatItem> chatItems) {
         this.mContext = context;
-        this.messages = messageContents;
+        this.chatItems = chatItems;
     }
 
     @Override
@@ -48,36 +46,48 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
 
     @Override
     public void onBindViewHolder(ChatListAdapter.ChatListViewHolder holder, int position) {
-        TextMessage currentMessage = messages.get(position);
-        // TODO: 17-9-4 拓展： 当前版本type都为Text
-        // currentMessage.getContentType();
-
-        Gson gson = new Gson();
-        WeNaviMessage weNaviMessage = gson.fromJson(currentMessage.getMessageContent(), WeNaviMessage.class);
-
-        if(currentMessage.getType()== Constant.CONVERSATION_ME){
-            //隐藏对方的
-            holder.contentYou.setVisibility(View.GONE);
+//        TextMessage currentMessage = messages.get(position);
+//        // TODO: 17-9-4 拓展： 当前版本type都为Text
+//        // currentMessage.getContentType();
+//
+//        Gson gson = new Gson();
+//        WeNaviMessage weNaviMessage = gson.fromJson(currentMessage.getMessageContent(), WeNaviMessage.class);
+//
+//        if(currentMessage.getType()== Constant.CONVERSATION_ME){
+//            //隐藏对方的
+//            holder.contentYou.setVisibility(View.GONE);
+//            holder.contentMe.setVisibility(View.VISIBLE);
+//            holder.textMe.setText(weNaviMessage.getContent());
+//        } else if (currentMessage.getType() == Constant.CONVERSATION_YOU) {
+//            //隐藏自己的
+//            holder.contentMe.setVisibility(View.VISIBLE);
+//            holder.contentYou.setVisibility(View.GONE);
+//            holder.textYou.setText(weNaviMessage.getContent());
+//        }
+        ChatItem chatItem = chatItems.get(position);
+        String from = chatItem.getUsername();
+        if (from != SPUtil.get(mContext, Constant.USERNAME,mContext.getString(R.string.string_default))) {
+            holder.contentMe.setVisibility(View.GONE);
+            holder.contentYou.setVisibility(View.VISIBLE);
+            holder.textYou.setText(chatItem.getChatMessage().getTextMessage());
+        } else {
             holder.contentMe.setVisibility(View.VISIBLE);
-            holder.textMe.setText(weNaviMessage.getContent());
-        } else if (currentMessage.getType() == Constant.CONVERSATION_YOU) {
-            //隐藏自己的
-            holder.contentMe.setVisibility(View.VISIBLE);
             holder.contentYou.setVisibility(View.GONE);
-            holder.textYou.setText(weNaviMessage.getContent());
+            holder.textMe.setText(chatItem.getChatMessage().getTextMessage());
         }
     }
 
     @Override
     public int getItemCount() {
-        return messages.size();
+//        return messages.size();
+        return chatItems.size();
     }
 
-    public void insertDataToHead(TextMessage textMessage) {
-//        在最开始位置添加
-        messages.add(0,textMessage);
-        notifyDataSetChanged();
-    }
+//    public void insertDataToHead(TextMessage textMessage) {
+////        在最开始位置添加
+//        messages.add(0,textMessage);
+//        notifyDataSetChanged();
+//    }
 
     public class ChatListViewHolder extends RecyclerView.ViewHolder {
 

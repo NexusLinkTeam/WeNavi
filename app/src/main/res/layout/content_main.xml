@@ -37,7 +37,7 @@
         android:background="#ffffff"
         app:behavior_hideable="false"
         app:behavior_peekHeight="0dp"
-        app:layout_behavior="@string/bottom_sheet_behavior"></android.support.v7.widget.RecyclerView>
+        app:layout_behavior="@string/bottom_sheet_behavior"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/sheet_bottom_chat"
@@ -46,7 +46,7 @@
         android:background="#ffffff"
         app:behavior_hideable="false"
         app:behavior_peekHeight="0dp"
-        app:layout_behavior="@string/bottom_sheet_behavior"></android.support.v7.widget.RecyclerView>
+        app:layout_behavior="@string/bottom_sheet_behavior"/>
 
     <LinearLayout
         android:id="@+id/view_bottom_friends"

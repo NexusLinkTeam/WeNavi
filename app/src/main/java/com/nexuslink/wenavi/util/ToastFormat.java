@@ -6,6 +6,7 @@ package com.nexuslink.wenavi.util;
  */
 
 public class ToastFormat {
+
     public static String show(String s) {
         return JmessageResultIIntercept.intercept(s) +
                 "(" + s + ")";

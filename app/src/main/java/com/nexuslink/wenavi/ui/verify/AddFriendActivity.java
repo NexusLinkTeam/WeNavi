@@ -1,14 +1,11 @@
-package com.nexuslink.wenavi.ui.friend;
+package com.nexuslink.wenavi.ui.verify;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -39,6 +36,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 
 public class AddFriendActivity extends BaseActivity {
+
     @BindView(R.id.et_searchUser)
     EditText etSearchUser;
     @BindView(R.id.iv_clear)
@@ -47,15 +45,14 @@ public class AddFriendActivity extends BaseActivity {
     Button btnSearch;
     @BindView(R.id.search_name)
     TextView mSearchName;
-
     @BindView(R.id.search_result)
     LinearLayout searchResult;
-    ProgressDialog dialog;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.search_addBtn)
     TextView searchAddBtn;
     @BindView(R.id.avatar_friend)
+
     CircleImageView avatarFriend;
     UserInfo myInfo,friendInfo;
     AlertDialog dialog6;
@@ -74,7 +71,6 @@ public class AddFriendActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         btnSearch.setEnabled(false);
         etSearchUser.addTextChangedListener(new TextChange());
-        dialog = new ProgressDialog(this);
     }
 
     @OnClick({R.id.iv_clear, R.id.btn_search, R.id.search_addBtn, R.id.search_result})
@@ -87,12 +83,12 @@ public class AddFriendActivity extends BaseActivity {
                 hideKb();
                 String searchName = etSearchUser.getText().toString().trim();
                 if (!TextUtils.isEmpty(searchName)) {
-                    dialog.show();
+//                    showBaseProgress(true);
                     JMessageClient.getUserInfo(searchName, new GetUserInfoCallback() {
                         @Override
                         public void gotResult(int i, String s, UserInfo userInfo) {
+//                            showBaseProgress(false);
                             if (i == 0) {
-                                dialog.dismiss();
                                 Log.e("TAG","gotResult");
                                 searchResult.setVisibility(View.VISIBLE);
                                 friendInfo = userInfo;
@@ -165,7 +161,7 @@ public class AddFriendActivity extends BaseActivity {
                             }
                             @Override
                             public void clickRightButton(View view, String text) {
-                                ContactManager.sendInvitationRequest(friendInfo.getUserName(), "31b2964462b4db5e14442b9f", text, new BasicCallback() {
+                                ContactManager.sendInvitationRequest(friendInfo.getNickName(), "31b2964462b4db5e14442b9f", text, new BasicCallback() {
                                     @Override
                                     public void gotResult(int i, String s) {
                                         if(i==0){

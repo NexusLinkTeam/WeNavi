@@ -1,8 +1,7 @@
-package com.nexuslink.wenavi.ui.friend;
+package com.nexuslink.wenavi.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,7 @@ import android.widget.TextView;
 
 import com.nexuslink.wenavi.FriendVerify;
 import com.nexuslink.wenavi.R;
+import com.nexuslink.wenavi.ui.verify.FriendVerifyActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +68,7 @@ public class FriendVerifyAdapter extends RecyclerView.Adapter<FriendVerifyAdapte
 
     }
 
-    interface OnItemClickListener{
+    public interface OnItemClickListener{
         void onItemAgree(String uId);
         void onItemRefuse(String uId);
         void onFinish();

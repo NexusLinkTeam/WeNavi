@@ -21,7 +21,6 @@
             <EditText android:id="@+id/editTx_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
                 android:hint="@string/account_register" />
         </android.support.design.widget.TextInputLayout>
 

@@ -1,4 +1,4 @@
-package com.nexuslink.wenavi.ui.friend;
+package com.nexuslink.wenavi.ui.verify;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,6 +15,7 @@ import com.nexuslink.wenavi.FriendVerify;
 import com.nexuslink.wenavi.FriendVerifyDao;
 import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseActivity;
+import com.nexuslink.wenavi.ui.adapter.FriendVerifyAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
+import cn.jpush.im.android.eventbus.EventBus;
 import cn.jpush.im.api.BasicCallback;
 
 /**
@@ -33,6 +35,7 @@ import cn.jpush.im.api.BasicCallback;
  */
 
 public class FriendVerifyActivity extends BaseActivity implements FriendVerifyAdapter.OnItemClickListener {
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.recycler_view)
@@ -43,16 +46,17 @@ public class FriendVerifyActivity extends BaseActivity implements FriendVerifyAd
     List<String> uIds = new ArrayList<>();
     private int verifyNum = 0;
     FriendVerifyAdapter mAdapter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_verify);
+        ButterKnife.bind(this);
         initView();
         initData();
         requestData();
     }
     private void initView(){
-        ButterKnife.bind(this);
         toolbar.setTitle(R.string.new_friends);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -126,6 +130,9 @@ public class FriendVerifyActivity extends BaseActivity implements FriendVerifyAd
                                 FriendVerify verify = verifyDao.queryBuilder().where(FriendVerifyDao.Properties.UserName.eq(uId)).unique();
                                 verifyDao.deleteByKey(verify.getId());
                                 mAdapter.deleteData(verify);
+                                //发送成功后需要通知会话跟新
+                                EventBus.getDefault().post(new RefreshConversationEvent());
+                                Log.d("ConversationEvent", "gotResult: 发送RefreshConversationEvent");
                             }else {
                                 Toast.makeText(FriendVerifyActivity.this,"添加好友失败",Toast.LENGTH_SHORT).show();
                             }
