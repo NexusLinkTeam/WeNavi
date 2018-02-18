@@ -1,6 +1,9 @@
 package com.nexuslink.wenavi.callback;
 
+import com.nexuslink.wenavi.common.ServeType;
+
 /**
+ *  服务器回调
  * Created by 18064 on 2018/2/3.
  */
 
@@ -11,7 +14,7 @@ public interface ServerResultCallback {
      * @param <T> 结果类型
      * @param code 业务代码
      */
-    <T> void onSuccess(T result, int code);
+    <T> void onSuccess(T result, @ServeType int code);
 
     /**
      *  失败时回调

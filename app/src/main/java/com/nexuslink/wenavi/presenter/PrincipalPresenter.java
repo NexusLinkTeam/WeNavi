@@ -6,7 +6,6 @@ import com.nexuslink.wenavi.FriendVerifyDao;
 import com.nexuslink.wenavi.base.BaseApp;
 import com.nexuslink.wenavi.callback.ServerResultCallback;
 import com.nexuslink.wenavi.common.Constant;
-import com.nexuslink.wenavi.common.Service;
 import com.nexuslink.wenavi.contract.PrincipalContract;
 import com.nexuslink.wenavi.model.ConversationItem;
 import com.nexuslink.wenavi.model.IServerModel;
@@ -41,7 +40,7 @@ public class PrincipalPresenter implements PrincipalContract.Presenter, ServerRe
 
     @Override
     public void saveUserProfile(String username) {
-        model.getUserInfo(username, Service.GET_USER_INFO_USER);
+        model.getUserInfo(username, Constant.GET_USER_INFO_USER);
     }
 
     @Override
@@ -51,7 +50,7 @@ public class PrincipalPresenter implements PrincipalContract.Presenter, ServerRe
 
     @Override
     public void receiveInvitation(String from, String reason) {
-        model.getUserInfo(from, Service.GET_USER_INFO_TARGET);
+        model.getUserInfo(from, Constant.GET_USER_INFO_TARGET);
         this.reason = reason;
     }
 
@@ -79,7 +78,7 @@ public class PrincipalPresenter implements PrincipalContract.Presenter, ServerRe
     @Override
     public <T> void onSuccess(T result, int code) {
         switch (code) {
-            case Service.GET_USER_INFO_USER:
+            case Constant.GET_USER_INFO_USER:
                 WeNaviUserInfo weNaviUserInfo = (WeNaviUserInfo) result;
                 SPUtil.putAndApply(BaseApp.getBaseApplicationContext(),
                         Constant.USERNAME,
@@ -91,7 +90,7 @@ public class PrincipalPresenter implements PrincipalContract.Presenter, ServerRe
                         Constant.AVATAR,
                         weNaviUserInfo.getAvatar());
                 break;
-            case Service.GET_USER_INFO_TARGET:
+            case Constant.GET_USER_INFO_TARGET:
                 //存储邀请消息
                 weNaviUserInfo = (WeNaviUserInfo) result;
                 FriendVerify verify = new FriendVerify();

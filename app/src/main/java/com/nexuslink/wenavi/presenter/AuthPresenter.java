@@ -6,7 +6,6 @@ import com.nexuslink.wenavi.R;
 import com.nexuslink.wenavi.base.BaseApp;
 import com.nexuslink.wenavi.callback.ServerResultCallback;
 import com.nexuslink.wenavi.common.Constant;
-import com.nexuslink.wenavi.common.Service;
 import com.nexuslink.wenavi.contract.AuthContract;
 import com.nexuslink.wenavi.model.IServerModel;
 import com.nexuslink.wenavi.model.WeNaviUserInfo;
@@ -46,13 +45,13 @@ public class AuthPresenter implements AuthContract.Presenter, ServerResultCallba
     @Override
     public <T> void onSuccess(T result, int code) {
         switch (code) {
-            case Service.SIGN_UP:
+            case Constant.SIGN_UP:
                 view.showProgress(false);
                 view.shortToast(R.string.register_success);
                 WeNaviUserInfo weNaviUserInfo = (WeNaviUserInfo) result;
                 view.onFinishRegister(weNaviUserInfo.getUserName(), weNaviUserInfo.getPassword());
                 break;
-            case Service.SIGN_IN:
+            case Constant.SIGN_IN:
                 Log.d("LOGIN", "onSuccess: 回调成功");
                 SPUtil.putAndApply(BaseApp.getBaseApplicationContext(), Constant.IS_LOGIN, true);
                 view.openActivity(PrincipalActivity.class, null);

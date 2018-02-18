@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.nexuslink.wenavi.callback.ServerResultCallback;
 import com.nexuslink.wenavi.common.Constant;
-import com.nexuslink.wenavi.common.Service;
+import com.nexuslink.wenavi.common.ServeType;
 import com.nexuslink.wenavi.model.ChatItem;
 import com.nexuslink.wenavi.model.ChatMessage;
 import com.nexuslink.wenavi.model.ConversationItem;
@@ -67,7 +67,7 @@ public class JMessageServerModel implements IServerModel {
                     WeNaviUserInfo weNaviUserInfo = new WeNaviUserInfo();
                     weNaviUserInfo.setUserName(username);
                     weNaviUserInfo.setPassword(password);
-                    helper.handleResult(i, s,weNaviUserInfo, Service.SIGN_UP);
+                    helper.handleResult(i, s,weNaviUserInfo, Constant.SIGN_IN);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -82,7 +82,7 @@ public class JMessageServerModel implements IServerModel {
             public void gotResult(int i, String s) {
                 try {
                     Log.d("LOGIN", "gotResult: 登陆成功");
-                    helper.handleResult(i, s,null, Service.SIGN_IN);
+                    helper.handleResult(i, s,null, Constant.SIGN_IN);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -340,10 +340,10 @@ public class JMessageServerModel implements IServerModel {
         private static final int RESULT_OK = 0;
 
         public void handleResult(int resultCode, String exception) throws Exception {
-            this.handleResult(resultCode, exception, null, SIMPLE_RESULT);
+            this.handleResult(resultCode, exception, null, Constant.NONE);
         }
 
-        public <T> void handleResult(int resultCode, String exception, T result, int code) throws Exception {
+        public <T> void handleResult(int resultCode, String exception, T result, @ServeType int code) throws Exception {
             if (callback == null) {
                 throw new Exception("ServerResultCallback can not be null");
             }

@@ -28,4 +28,10 @@ public interface Constant {
     String USERNAME = "username";
     String CONVERSATION = "conversation";
     String NICKNAME = "nickname";
+
+    int SIGN_UP = 0;
+    int SIGN_IN = 1;
+    int GET_USER_INFO_USER = 2;
+    int GET_USER_INFO_TARGET = 3;
+    int NONE = -1;
 }
